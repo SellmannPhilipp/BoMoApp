@@ -3,6 +3,10 @@ package com.praktikum.bomoapp
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -48,6 +52,8 @@ fun settings() {
         NetworkTracking()
         Spacer(modifier = Modifier.height(20.dp))
         GpsTracking()
+        Spacer(modifier = Modifier.height(20.dp))
+        Accelerometer()
     }
 }
 
@@ -124,6 +130,49 @@ fun GpsTracking() {
         } else {
             Log.d("GPS-Tracking", "Tracking wird gestoppt")
             locationManager.removeUpdates(locationListener)
+        }
+
+        onDispose {
+            // Cleanup, if necessary
+        }
+    }
+}
+
+@Composable
+fun Accelerometer() {
+    val ctx = LocalContext.current
+    var accelerometerOn by remember { mutableStateOf(false) }
+    var btnTextTrackingEnabled = if (accelerometerOn) "Ein" else "Aus"
+    var accX by remember { mutableStateOf(0f) }
+    var accY by remember { mutableStateOf(0f) }
+    var accZ by remember { mutableStateOf(0f) }
+
+    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+    val sensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        }
+        override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                accX = event.values[0]
+                accY = event.values[1]
+                accZ = event.values[2]
+            }
+        }
+    }
+
+    Button(onClick = { accelerometerOn = !accelerometerOn }) {
+        Text(text = "Beschleunigungssensor: $accelerometerOn")
+    }
+
+    DisposableEffect(accelerometerOn) {
+        if (accelerometerOn) {
+            Log.d("Accelerometer", "Accelerometer gestartet")
+            sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL)
+            Log.d("Accelerometer", "X: $accX\nY: $accY\nZ: $accZ")
+        } else {
+            Log.d("Accelerometer", "Accelerometer gestoppt")
+            sensorManager.unregisterListener(sensorEventListener)
         }
 
         onDispose {
