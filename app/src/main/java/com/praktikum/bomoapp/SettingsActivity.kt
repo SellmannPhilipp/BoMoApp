@@ -54,6 +54,8 @@ fun settings() {
         GpsTracking()
         Spacer(modifier = Modifier.height(20.dp))
         Accelerometer()
+        Spacer(modifier = Modifier.height(20.dp))
+        Gyroscope()
     }
 }
 
@@ -69,7 +71,7 @@ fun NetworkTracking() {
 
     var tracking by remember { mutableStateOf(false) }
 
-    var btnTextTrackingEnabled = if (tracking) "Ein" else "Aus"
+    var btnTextEnabled = if (tracking) "Ein" else "Aus"
 
     val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -79,7 +81,7 @@ fun NetworkTracking() {
     }
 
     Button(onClick = { tracking = !tracking }) {
-        Text(text = "Network-Tracking: $btnTextTrackingEnabled")
+        Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
     DisposableEffect(tracking) {
@@ -109,7 +111,7 @@ fun GpsTracking() {
 
     var tracking by remember { mutableStateOf(false) }
 
-    var btnTextTrackingEnabled = if (tracking) "Ein" else "Aus"
+    var btnTextEnabled = if (tracking) "Ein" else "Aus"
 
     val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -119,7 +121,7 @@ fun GpsTracking() {
     }
 
     Button(onClick = { tracking = !tracking }) {
-        Text(text = "GPS-Tracking: $btnTextTrackingEnabled")
+        Text(text = "GPS-Tracking: $btnTextEnabled")
     }
 
     DisposableEffect(tracking) {
@@ -142,7 +144,7 @@ fun GpsTracking() {
 fun Accelerometer() {
     val ctx = LocalContext.current
     var accelerometerOn by remember { mutableStateOf(false) }
-    var btnTextTrackingEnabled = if (accelerometerOn) "Ein" else "Aus"
+    var btnTextEnabled = if (accelerometerOn) "Ein" else "Aus"
     var accX by remember { mutableStateOf(0f) }
     var accY by remember { mutableStateOf(0f) }
     var accZ by remember { mutableStateOf(0f) }
@@ -162,7 +164,7 @@ fun Accelerometer() {
     }
 
     Button(onClick = { accelerometerOn = !accelerometerOn }) {
-        Text(text = "Beschleunigungssensor: $accelerometerOn")
+        Text(text = "Beschleunigungssensor: $btnTextEnabled")
     }
 
     DisposableEffect(accelerometerOn) {
@@ -172,6 +174,49 @@ fun Accelerometer() {
             Log.d("Accelerometer", "X: $accX\nY: $accY\nZ: $accZ")
         } else {
             Log.d("Accelerometer", "Accelerometer gestoppt")
+            sensorManager.unregisterListener(sensorEventListener)
+        }
+
+        onDispose {
+            // Cleanup, if necessary
+        }
+    }
+}
+
+@Composable
+fun Gyroscope() {
+    val ctx = LocalContext.current
+    var gyroscopeOn by remember { mutableStateOf(false) }
+    var btnTextEnabled = if (gyroscopeOn) "Ein" else "Aus"
+    var gyrX by remember { mutableStateOf(0f) }
+    var gyrY by remember { mutableStateOf(0f) }
+    var gyrZ by remember { mutableStateOf(0f) }
+
+    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+    val sensorEventListener = object : SensorEventListener {
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+        }
+        override fun onSensorChanged(event: SensorEvent) {
+            if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
+                gyrX = event.values[0]
+                gyrY = event.values[1]
+                gyrZ = event.values[2]
+            }
+        }
+    }
+
+    Button(onClick = { gyroscopeOn = !gyroscopeOn }) {
+        Text(text = "Gyroskop: $btnTextEnabled")
+    }
+
+    DisposableEffect(gyroscopeOn) {
+        if (gyroscopeOn) {
+            Log.d("Gyroscope", "Gyroscope gestartet")
+            sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),SensorManager.SENSOR_DELAY_NORMAL)
+            Log.d("Gyroscope", "X: $gyrX\nY: $gyrY\nZ: $gyrZ")
+        } else {
+            Log.d("Gyroscope", "Gyroscope gestoppt")
             sensorManager.unregisterListener(sensorEventListener)
         }
 
