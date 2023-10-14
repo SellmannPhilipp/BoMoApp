@@ -12,10 +12,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -26,21 +25,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.praktikum.bomoapp.ui.theme.BoMoAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                GpsTracking()
+                settings()
             }
             else {
                 requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),0)
             }
         }
+    }
+}
+
+@Composable
+fun settings() {
+    Column {
+        NetworkTracking()
+        Spacer(modifier = Modifier.height(20.dp))
+        GpsTracking()
     }
 }
 
@@ -76,11 +83,11 @@ fun NetworkTracking() {
 
     DisposableEffect(tracking) {
         if (tracking) {
-            Log.d("Debug", "Tracking wird gestartet")
+            Log.d("Network-Tracking", "Tracking wird gestartet")
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener)
-            Log.d("Debug", "Longitiude: $longitude\nLatitude: $latitude")
+            Log.d("Network-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
         } else {
-            Log.d("Debug", "Tracking wird gestoppt")
+            Log.d("Network-Tracking", "Tracking wird gestoppt")
             locationManager.removeUpdates(locationListener)
         }
 
@@ -121,11 +128,11 @@ fun GpsTracking() {
 
     DisposableEffect(tracking) {
         if (tracking) {
-            Log.d("Debug", "Tracking wird gestartet")
+            Log.d("GPS-Tracking", "Tracking wird gestartet")
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, locationListener)
-            Log.d("Debug", "Longitiude: $longitude\nLatitude: $latitude")
+            Log.d("GPS-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
         } else {
-            Log.d("Debug", "Tracking wird gestoppt")
+            Log.d("GPS-Tracking", "Tracking wird gestoppt")
             locationManager.removeUpdates(locationListener)
         }
 
