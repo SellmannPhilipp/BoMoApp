@@ -72,13 +72,8 @@ fun NetworkTracking() {
         }
     }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { tracking = !tracking }) {
-            Text(text = "Network-Tracking: $btnTextTrackingEnabled")
-        }
+    Button(onClick = { tracking = !tracking }) {
+        Text(text = "Network-Tracking: $btnTextTrackingEnabled")
     }
 
     DisposableEffect(tracking) {
@@ -117,13 +112,8 @@ fun GpsTracking() {
         }
     }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = { tracking = !tracking }) {
-            Text(text = "GPS-Tracking: $btnTextTrackingEnabled")
-        }
+    Button(onClick = { tracking = !tracking }) {
+        Text(text = "GPS-Tracking: $btnTextTrackingEnabled")
     }
 
     DisposableEffect(tracking) {
