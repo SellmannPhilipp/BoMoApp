@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,19 +34,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BoMoAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        NetworkTracking()
-                    }
-                    else {
-                        requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),0)
-                    }
-                }
+            if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                NetworkTracking()
+            }
+            else {
+                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),0)
             }
         }
     }
@@ -58,17 +51,12 @@ fun NetworkTracking() {
     val ctx = LocalContext.current
     val locationManager: LocationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    var latitude by remember{ mutableStateOf(0.0) }
+    var latitude by remember { mutableStateOf(0.0) }
     var longitude by remember { mutableStateOf(0.0) }
 
     var tracking by remember { mutableStateOf(false) }
-    var btnTextTrackingEnabled by remember { mutableStateOf("") }
 
-    if(tracking) {
-        btnTextTrackingEnabled = "Ein"
-    } else {
-        btnTextTrackingEnabled = "Aus"
-    }
+    var btnTextTrackingEnabled = if (tracking) "Ein" else "Aus"
 
     val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -81,18 +69,23 @@ fun NetworkTracking() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = {tracking = !tracking}) {
+        Button(onClick = { tracking = !tracking }) {
             Text(text = "Network-Tracking: $btnTextTrackingEnabled")
         }
     }
 
-    if(tracking) {
-        Log.d("Debug", "Tracking wird gestartet")
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000L,0f,locationListener)
-    } else {
-        Log.d("Debug", "Tracking wird gestoppt")
-        locationManager.removeUpdates(locationListener)
-    }
+    DisposableEffect(tracking) {
+        if (tracking) {
+            Log.d("Debug", "Tracking wird gestartet")
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener)
+            Log.d("Debug", "Longitiude: $longitude\nLatitude: $latitude")
+        } else {
+            Log.d("Debug", "Tracking wird gestoppt")
+            locationManager.removeUpdates(locationListener)
+        }
 
-    Log.d("Debug", "$longitude : $latitude")
+        onDispose {
+            // Cleanup, if necessary
+        }
+    }
 }
