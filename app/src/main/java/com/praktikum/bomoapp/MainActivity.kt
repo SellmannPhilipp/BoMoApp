@@ -38,7 +38,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             val intentSettings = Intent(this, SettingsActivity::class.java)
             val intentMap = Intent(this, MapActivity::class.java)
-            startActivity(intentMap)
+
+            Column {
+                Button(onClick = { startActivity(intentMap) }) {
+                    Text(text = "Zeige Map")
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Button(onClick = { startActivity(intentSettings) }) {
+                    Text(text = "Zeige Settings")
+                }
+            }
         }
     }
 }
