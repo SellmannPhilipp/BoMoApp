@@ -1,12 +1,10 @@
-package com.praktikum.bomoapp
+package com.praktikum.bomoapp.Activities
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,10 +15,6 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import android.Manifest
-import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 
