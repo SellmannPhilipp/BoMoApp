@@ -1,4 +1,4 @@
-package com.praktikum.bomoapp.Activities
+package com.praktikum.bomoapp.activities
 
 import android.content.Intent
 import android.os.Bundle
