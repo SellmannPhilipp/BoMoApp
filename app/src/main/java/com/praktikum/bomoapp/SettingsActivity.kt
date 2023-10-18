@@ -2,7 +2,6 @@ package com.praktikum.bomoapp
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -15,7 +14,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -27,18 +25,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import org.eclipse.paho.client.mqttv3.MqttClient
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions
+import org.eclipse.paho.client.mqttv3.MqttMessage
+import kotlin.concurrent.thread
+
+
+val gpsList = mutableListOf("")
+val networkList = mutableListOf("")
+val accelerometerList = mutableListOf("")
+val gyroscopeList = mutableListOf("")
+val lock = Any()
 
 class SettingsActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),0)
+                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
             }
             settings()
         }
@@ -55,6 +63,72 @@ fun settings() {
         Accelerometer()
         Spacer(modifier = Modifier.height(20.dp))
         Gyroscope()
+        Spacer(modifier = Modifier.height(20.dp))
+        saveDataButton()
+    }
+}
+fun saveAllDataServer(){
+    var gpsListCopy: List<String>
+    var networkListCopy: List<String>
+    var accelerometerListCopy: List<String>
+    var gyroscopeListCopy: List<String>
+    synchronized(lock) {
+        gpsListCopy = gpsList.toList()
+        networkListCopy = networkList.toList()
+        accelerometerListCopy = accelerometerList.toList()
+        gyroscopeListCopy =  gyroscopeList.toList()
+        gpsList.clear()
+        networkList.clear()
+        accelerometerList.clear()
+        gyroscopeList.clear()
+    }
+    Log.d("saveAllDataServer", "Starting Thread")
+    thread {
+        val serverUri = "tcp://185.239.238.141:1883"
+        val clientId = "AndroidApp"
+        val options = MqttConnectOptions()
+        options.isCleanSession = true
+        val mqttClient = MqttClient(serverUri, clientId, null)
+        mqttClient.connect(options)
+        var iterator = gpsListCopy.iterator()
+        while (iterator.hasNext()) {
+            val element = iterator.next()
+            val message = MqttMessage()
+            Log.d("CoThread", element)
+            message.payload = element.toByteArray()
+            mqttClient.publish("lokalisierung/gps", message)
+        }
+        iterator = networkListCopy.iterator()
+        while (iterator.hasNext()) {
+            val element = iterator.next()
+            val message = MqttMessage()
+            Log.d("CoThread", element)
+            message.payload = element.toByteArray()
+            mqttClient.publish("lokalisierung/network", message)
+        }
+        iterator = accelerometerListCopy.iterator()
+        while (iterator.hasNext()) {
+            val element = iterator.next()
+            val message = MqttMessage()
+            Log.d("CoThread", element)
+            message.payload = element.toByteArray()
+            mqttClient.publish("lokalisierung/acc", message)
+        }
+        iterator = gyroscopeListCopy.iterator()
+        while (iterator.hasNext()) {
+            val element = iterator.next()
+            val message = MqttMessage()
+            Log.d("CoThread", element)
+            message.payload = element.toByteArray()
+            mqttClient.publish("lokalisierung/gyro", message)
+        }
+        mqttClient.disconnect()
+    }
+}
+@Composable
+fun saveDataButton() {
+    Button(onClick = { saveAllDataServer()}) {
+        Text(text = "Daten auf Server Speichern")
     }
 }
 
@@ -76,6 +150,7 @@ fun NetworkTracking() {
         override fun onLocationChanged(location: Location) {
             latitude = location.latitude
             longitude = location.longitude
+            networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
         }
     }
 
@@ -116,6 +191,7 @@ fun GpsTracking() {
         override fun onLocationChanged(location: Location) {
             latitude = location.latitude
             longitude = location.longitude
+            gpsList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
         }
     }
 
@@ -158,6 +234,7 @@ fun Accelerometer() {
                 accX = event.values[0]
                 accY = event.values[1]
                 accZ = event.values[2]
+                accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
             }
         }
     }
@@ -201,6 +278,7 @@ fun Gyroscope() {
                 gyrX = event.values[0]
                 gyrY = event.values[1]
                 gyrZ = event.values[2]
+                gyroscopeList.add(System.currentTimeMillis().toString()+","+gyrX+","+gyrY+","+gyrZ+"\n")
             }
         }
     }
