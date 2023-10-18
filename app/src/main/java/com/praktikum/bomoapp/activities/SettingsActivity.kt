@@ -1,4 +1,4 @@
-package com.praktikum.bomoapp
+package com.praktikum.bomoapp.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
