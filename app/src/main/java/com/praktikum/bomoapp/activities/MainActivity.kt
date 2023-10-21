@@ -126,18 +126,6 @@ class MainActivity : ComponentActivity() {
 
             var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "settings") {
-                composable("map") {
-                    OsmdroidMapView()
-                }
-                composable("settings") {
-                    Settings()
-                }
-                composable("data") {
-                    TestComp()
-                }
-            }
-
             Scaffold(
                 bottomBar = {
                     NavigationBar {
@@ -146,7 +134,6 @@ class MainActivity : ComponentActivity() {
                                 selected = selectedItemIndex == index,
                                 onClick = {
                                     selectedItemIndex = index
-                                    Log.d("Debug", "${item.route}")
                                     navController.navigate(item.route)
                                 },
                                 label = {
@@ -165,7 +152,17 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             ) {
-
+                NavHost(navController = navController, startDestination = "data") {
+                    composable("map") {
+                        OsmdroidMapView()
+                    }
+                    composable("settings") {
+                        Settings()
+                    }
+                    composable("data") {
+                        TestComp()
+                    }
+                }
             }
 
             //AppContent(intentMap, intentSettings)
