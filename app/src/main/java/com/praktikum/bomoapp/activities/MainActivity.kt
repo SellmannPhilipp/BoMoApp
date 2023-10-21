@@ -63,6 +63,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -75,6 +76,7 @@ import com.praktikum.bomoapp.ForegroundService
 
 
 data class BottomNavigationItem(
+    val route: String,
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
@@ -103,16 +105,19 @@ class MainActivity : ComponentActivity() {
 
             val items = listOf(
                 BottomNavigationItem(
+                    route = "settings",
                     title = "Einstellungen",
                     selectedIcon = Icons.Filled.Settings,
                     unselectedIcon = Icons.Outlined.Settings
                 ),
                 BottomNavigationItem(
+                    route = "map",
                     title = "Karte",
                     selectedIcon = Icons.Filled.Place,
                     unselectedIcon = Icons.Outlined.Place
                 ),
                 BottomNavigationItem(
+                    route = "data",
                     title = "Daten",
                     selectedIcon = Icons.Filled.Done,
                     unselectedIcon = Icons.Outlined.Done
@@ -120,7 +125,18 @@ class MainActivity : ComponentActivity() {
             )
 
             var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
-
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "settings") {
+                composable("map") {
+                    OsmdroidMapView()
+                }
+                composable("settings") {
+                    Settings()
+                }
+                composable("data") {
+                    TestComp()
+                }
+            }
 
             Scaffold(
                 bottomBar = {
@@ -130,7 +146,8 @@ class MainActivity : ComponentActivity() {
                                 selected = selectedItemIndex == index,
                                 onClick = {
                                     selectedItemIndex = index
-                                    //navController.navigate("")
+                                    Log.d("Debug", "${item.route}")
+                                    navController.navigate(item.route)
                                 },
                                 label = {
                                         Text(text = item.title)
@@ -153,6 +170,11 @@ class MainActivity : ComponentActivity() {
 
             //AppContent(intentMap, intentSettings)
         }
+    }
+
+    @Composable
+    fun TestComp() {
+        Text(text = "Hello World")
     }
 
     @Composable
