@@ -16,15 +16,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-<<<<<<< HEAD
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.width
-=======
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
->>>>>>> GUI
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
@@ -58,28 +53,20 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-<<<<<<< HEAD
         val intentMap = Intent(this, MapActivity::class.java)
+        val intentSettings = Intent(this, SettingsActivity::class.java)
         //val switch = findViewById<Switch>(R.id.my)
         setContent {
             // Initialisieren Sie die SharedPreferences
             sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
-            AppContent(intentMap)
-=======
-        setContent {
-            // Initialisieren Sie die SharedPreferences
-            sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
->>>>>>> GUI
-
             serviceIntent = Intent(LocalContext.current, ForegroundService::class.java)
-
-            AppContent()
+            AppContent(intentMap, intentSettings)
         }
     }
 
 
     @Composable
-    fun AppContent(map: Intent) {
+    fun AppContent(map: Intent, settings: Intent) {
         val tabOptions =
             listOf("Karte", "Einstellungen") // Füge hier die gewünschten Tab-Optionen hinzu
         var selectedTabIndex by remember { mutableStateOf(1) }
@@ -99,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 startActivity(map)
             }
             1 -> {
-                FirstTabContent()
+                startActivity(settings)
             }
         }
     }
