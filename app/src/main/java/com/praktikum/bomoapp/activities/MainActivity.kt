@@ -30,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
@@ -48,11 +50,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val intentMap = Intent(this, MapActivity::class.java)
         //val switch = findViewById<Switch>(R.id.my)
         setContent {
             // Initialisieren Sie die SharedPreferences
             sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
-            AppContent()
+            AppContent(intentMap)
 
             // Laden Sie die zuvor gespeicherten Werte, wenn vorhanden
         }
@@ -60,10 +63,10 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun AppContent() {
+    fun AppContent(map: Intent) {
         val tabOptions =
             listOf("Karte", "Einstellungen") // Füge hier die gewünschten Tab-Optionen hinzu
-        var selectedTabIndex by remember { mutableStateOf(0) }
+        var selectedTabIndex by remember { mutableStateOf(1) }
 
         TabRow(selectedTabIndex) {
             tabOptions.forEachIndexed { index, title ->
@@ -76,7 +79,7 @@ class MainActivity : ComponentActivity() {
         }
         when (selectedTabIndex) {
             0 -> {
-                Text(text = "Karte")
+                startActivity(map)
             }
 
             1 -> {
@@ -169,7 +172,9 @@ class MainActivity : ComponentActivity() {
             Text(
                 text = options[selectedIndex],
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp).align(Alignment.Center)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.Center)
             )
             if (expanded) {
                 Column(
@@ -190,12 +195,15 @@ class MainActivity : ComponentActivity() {
                                         3 -> {
                                             writeInsharedPreferences("selectedIndex", selectedIndex)
                                         }
+
                                         2 -> {
                                             writeInsharedPreferences("selectedIndex", selectedIndex)
                                         }
+
                                         1 -> {
                                             writeInsharedPreferences("selectedIndex", selectedIndex)
                                         }
+
                                         0 -> {
                                             writeInsharedPreferences("selectedIndex", selectedIndex)
                                         }
