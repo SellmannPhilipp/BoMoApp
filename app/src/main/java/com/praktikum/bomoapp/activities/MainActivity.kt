@@ -1,4 +1,4 @@
-package com.praktikum.bomoapp
+package com.praktikum.bomoapp.activities
 
 import android.content.ComponentName
 import android.content.Context
@@ -39,6 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.praktikum.bomoapp.ForegroundService
+import com.praktikum.bomoapp.MyService
 
 class MainActivity : ComponentActivity() {
     private var myService: MyService? = null
