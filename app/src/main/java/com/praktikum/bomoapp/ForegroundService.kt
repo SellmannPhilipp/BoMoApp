@@ -9,6 +9,10 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import com.praktikum.bomoapp.activities.MainActivity
 
@@ -18,25 +22,32 @@ class ForegroundService : Service() {
     private val NOTIFICATION_CHANNEL_ID = "my_channel"
     private val binder = LocalBinder()
 
+    var text by mutableStateOf("hallo")
+
     inner class LocalBinder : Binder() {
         fun getService(): ForegroundService = this@ForegroundService
     }
+    fun getTextService(): String {
+        return text
+    }
+    fun textChange(){
+        Log.d("Debug", "textTest--------------------")
+        if(text == "test"){
+            text = "Haus"
+        }else{
+            text = "test"
+        }
 
+    }
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
-
-    /*
-      override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-    */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = createNotification()
 
         startForeground(NOTIFICATION_ID, notification)
-
+        textChange()
         return START_STICKY
     }
 
