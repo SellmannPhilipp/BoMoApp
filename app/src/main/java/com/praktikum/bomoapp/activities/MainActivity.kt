@@ -50,6 +50,14 @@ class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private var textTest by mutableStateOf("Das")
     var gridTexts = List(6) { MutableList(4) { "" } }
+    var gridGX: String  by mutableStateOf("0")
+    var gridGY: String by mutableStateOf("0")
+    var gridGZ: String by mutableStateOf("0")
+    var gridAX: String  by mutableStateOf("0")
+    var gridAY: String by mutableStateOf("0")
+    var gridAZ: String by mutableStateOf("0")
+    var gridLat: String by mutableStateOf("0")
+    var gridLong: String by mutableStateOf("0")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,76 +94,6 @@ class MainActivity : ComponentActivity() {
             }
             1 -> {
                 FirstTabContent()
-            }
-        }
-    }
-
-    @Composable
-    fun GridContent() {
-        gridTexts = gridTexts.toMutableList().also { it[0][0] = "Gyroscope" }
-        gridTexts = gridTexts.toMutableList().also { it[0][2] = "Acc" }
-        gridTexts = gridTexts.toMutableList().also { it[1][0] = "X:" }
-        gridTexts = gridTexts.toMutableList().also { it[1][2] = "X:" }
-        gridTexts = gridTexts.toMutableList().also { it[2][0] = "Y:" }
-        gridTexts = gridTexts.toMutableList().also { it[2][2] = "Y:" }
-        gridTexts = gridTexts.toMutableList().also { it[3][0] = "Z:" }
-        gridTexts = gridTexts.toMutableList().also { it[3][2] = "Z:" }
-
-        gridTexts = gridTexts.toMutableList().also { it[3][3] = remember {
-            textTest
-        }
-        }
-
-        gridTexts = gridTexts.toMutableList().also { it[4][0] = "latitude:" }
-        gridTexts = gridTexts.toMutableList().also { it[4][2] = "longitude:" }
-
-        Column (modifier = Modifier.fillMaxWidth()){
-            Row (modifier = Modifier.fillMaxWidth()){
-                Box(
-                    modifier = Modifier
-                        .border(1.dp, Color.Black)
-                        .padding(4.dp)
-                        .height(40.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = gridTexts[0][0],
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .border(1.dp, Color.Black)
-                        .padding(4.dp)
-                        .height(40.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = gridTexts[0][2],
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            }
-            for (i in 1 until 6) {
-                Row (modifier = Modifier.fillMaxWidth()){
-                    for (j in 0 until 4) {
-                        Box(
-                            modifier = Modifier
-                                .border(1.dp, Color.Black)
-                                .padding(4.dp)
-                                .height(40.dp)
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = gridTexts[i][j],
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                    }
-                }
             }
         }
     }
@@ -222,13 +160,172 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+
+    @Composable
+    fun GridContent() {
+        gridTexts = gridTexts.toMutableList().also { it[0][0] = "Gyroscope" }
+        gridTexts = gridTexts.toMutableList().also { it[0][2] = "Acc" }
+        gridTexts = gridTexts.toMutableList().also { it[1][0] = "X:" }
+        gridTexts = gridTexts.toMutableList().also { it[1][2] = "X:" }
+        gridTexts = gridTexts.toMutableList().also { it[2][0] = "Y:" }
+        gridTexts = gridTexts.toMutableList().also { it[2][2] = "Y:" }
+        gridTexts = gridTexts.toMutableList().also { it[3][0] = "Z:" }
+        gridTexts = gridTexts.toMutableList().also { it[3][2] = "Z:" }
+
+        gridTexts = gridTexts.toMutableList().also { it[3][3] = remember {
+            textTest
+        }
+        }
+
+        gridTexts = gridTexts.toMutableList().also { it[4][0] = "latitude:" }
+        gridTexts = gridTexts.toMutableList().also { it[4][2] = "longitude:" }
+
+        Column (modifier = Modifier.fillMaxWidth()){
+            Row (modifier = Modifier.fillMaxWidth()){
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, Color.Black)
+                        .padding(4.dp)
+                        .height(40.dp)
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = gridTexts[0][0],
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, Color.Black)
+                        .padding(4.dp)
+                        .height(40.dp)
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = gridTexts[0][2],
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+            for (i in 1 until 6) {
+                Row (modifier = Modifier.fillMaxWidth()){
+
+                    for (j in 0 until 4) {
+                        Box(
+                            modifier = Modifier
+                                .border(1.dp, Color.Black)
+                                .padding(4.dp)
+                                .height(40.dp)
+                                .weight(1f)
+                        ){
+                        if(j % 2 == 0){
+                                Text(
+                                    text = gridTexts[i][j],
+                                    //text = textTest,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                        }else{
+                            when (i) {
+                                1  ->{
+                                    if (j == 1)
+                                    Text(
+                                        text = gridGX,
+                                        //text = textTest,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    if (j == 3)
+                                        Text(
+                                            text = gridAX,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    }
+                                2 ->{
+                                    if (j == 1)
+                                        Text(
+                                            text = gridGY,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    if (j == 3)
+                                        Text(
+                                            text = gridAY,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                }
+                                3 ->{
+                                    if (j == 1)
+                                        Text(
+                                            text = gridGZ,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    if (j == 3)
+                                        Text(
+                                            text = gridAZ,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                }
+                                3 ->{
+                                    if (j == 1)
+                                        Text(
+                                            text = gridLat,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    if (j == 3)
+                                        Text(
+                                            text = gridLong,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                }
+                                4 ->{
+                                    if (j == 1)
+                                        Text(
+                                            text = gridLat,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    if (j == 3)
+                                        Text(
+                                            text = gridLong,
+                                            //text = textTest,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Composable
     fun FirstTabContent() {
         sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
 
        // val sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(ContextAmbient.current)
 
-        var switchState by remember { mutableStateOf(sharedPreferences.getBoolean("switch_value", false)) }
+        var switchStateSensor by remember { mutableStateOf(sharedPreferences.getBoolean("switchStateSensor", false)) }
+        var switchStateType__ by remember { mutableStateOf(sharedPreferences.getBoolean("switchStateType__", false)) }
 
         val scrollState = rememberLazyListState()
 
@@ -239,6 +336,7 @@ class MainActivity : ComponentActivity() {
             state = scrollState
         ) {
             item {
+                //Sensor Einschalten
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -250,13 +348,12 @@ class MainActivity : ComponentActivity() {
                         textAlign = TextAlign.Center
                     )
                     Switch(
-                        checked = switchState,
-                        onCheckedChange = {switchState = it},
+                        checked = switchStateSensor,
+                        onCheckedChange = {switchStateSensor = it},
                         modifier = Modifier.padding(horizontal = 200.dp)
                     )
 
-
-                    if (switchState) {
+                    if (switchStateSensor) {
                         sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
                         //Start Service
                         serviceIntent?.let {
@@ -264,26 +361,57 @@ class MainActivity : ComponentActivity() {
                                 it
                             )
                         }
-                        Log.d("Debug", textTest)
-
-
-                        //onStart()
-                        Log.d("Debug", "OOI---------------------------")
                         with(sharedPreferences.edit()) {
-                            putBoolean("switch_value", switchState)
+                            putBoolean("switchStateSensor", switchStateSensor)
                             apply()
                         }
                     } else {
-                        //Stop Service
-                        //onStop()
                         stopService(serviceIntent)
                         with(sharedPreferences.edit()) {
-                            putBoolean("switch_value", switchState)
+                            putBoolean("switchStateSensor", switchStateSensor)
                             apply()
                         }
                     }
                 }
+                // Type__
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 20.dp)
+                ) {
+                    Text(
+                        text = "Type__",
+                        modifier = Modifier,
+                        textAlign = TextAlign.Center
+                    )
+                    Switch(
+                        checked = switchStateType__,
+                        onCheckedChange = {switchStateType__ = it},
+                        modifier = Modifier.padding(horizontal = 200.dp)
+                    )
 
+
+                    if (switchStateType__) {
+                        sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
+                        //Start Service
+                        serviceIntent?.let {
+                            ContextCompat.startForegroundService(LocalContext.current,
+                                it
+                            )
+                        }
+                        with(sharedPreferences.edit()) {
+                            putBoolean("switchStateType__", switchStateType__)
+                            apply()
+                        }
+                    } else {
+                        stopService(serviceIntent)
+                        with(sharedPreferences.edit()) {
+                            putBoolean("switchStateType__", switchStateSensor)
+                            apply()
+                        }
+                    }
+                }
+                //Abtastrate
                 Row {
                     Text(
                         text = "Abtastrate",
@@ -305,9 +433,15 @@ class MainActivity : ComponentActivity() {
                     Button(
                         onClick = {
                                   /* Hier kommt die entsprechende Aktion beim Klicken auf den Button */
+                            //Test zum Gui Akktualisieren
+                            /*
                             myForegroundService?.textChange()
                             Log.d("Debug", textTest)
                             textTest = myForegroundService?.getTextService().toString()
+                            gridTexts[3][3] = myForegroundService?.getTextService().toString()
+                            gridGX = myForegroundService?.getTextService().toString()
+                            gridAX = myForegroundService?.getTextService().toString()
+                            */
                                   },
                         modifier = Modifier
                             .weight(1f)
@@ -331,6 +465,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     private val connection: ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             val binder = service as ForegroundService.LocalBinder
