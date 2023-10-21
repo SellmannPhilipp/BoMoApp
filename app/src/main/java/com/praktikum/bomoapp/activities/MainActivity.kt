@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -95,10 +96,11 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val intentMap = Intent(this, MapActivity::class.java)
-        val intentSettings = Intent(this, SettingsActivity::class.java)
         //val switch = findViewById<Switch>(R.id.my)
         setContent {
+            if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
+            }
             // Initialisieren Sie die SharedPreferences
             sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
             serviceIntent = Intent(LocalContext.current, ForegroundService::class.java)
@@ -152,7 +154,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             ) {
-                NavHost(navController = navController, startDestination = "data") {
+                NavHost(navController = navController, startDestination = "settings") {
                     composable("map") {
                         OsmdroidMapView()
                     }
@@ -160,7 +162,7 @@ class MainActivity : ComponentActivity() {
                         Settings()
                     }
                     composable("data") {
-                        TestComp()
+                        Data()
                     }
                 }
             }
@@ -169,10 +171,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun TestComp() {
-        Text(text = "Hello World")
-    }
 
     @Composable
     fun AppContent(map: Intent, settings: Intent) {

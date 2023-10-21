@@ -46,18 +46,6 @@ val accelerometerList = mutableListOf("")
 val gyroscopeList = mutableListOf("")
 val lock = Any()
 
-class SettingsActivity: ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
-            }
-            Settings()
-        }
-    }
-}
-
 @Composable
 fun Settings() {
     Box(
