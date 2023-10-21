@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.activities
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -20,27 +21,64 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.praktikum.bomoapp.ForegroundService
+
+
+data class BottomNavigationItem(
+    val title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector
+)
 
 class MainActivity : ComponentActivity() {
 
@@ -51,6 +89,8 @@ class MainActivity : ComponentActivity() {
     private var textTest by mutableStateOf("Das")
     var gridTexts = List(6) { MutableList(4) { "" } }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intentMap = Intent(this, MapActivity::class.java)
@@ -60,10 +100,60 @@ class MainActivity : ComponentActivity() {
             // Initialisieren Sie die SharedPreferences
             sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
             serviceIntent = Intent(LocalContext.current, ForegroundService::class.java)
-            AppContent(intentMap, intentSettings)
+
+            val items = listOf(
+                BottomNavigationItem(
+                    title = "Einstellungen",
+                    selectedIcon = Icons.Filled.Settings,
+                    unselectedIcon = Icons.Outlined.Settings
+                ),
+                BottomNavigationItem(
+                    title = "Karte",
+                    selectedIcon = Icons.Filled.Place,
+                    unselectedIcon = Icons.Outlined.Place
+                ),
+                BottomNavigationItem(
+                    title = "Daten",
+                    selectedIcon = Icons.Filled.Done,
+                    unselectedIcon = Icons.Outlined.Done
+                )
+            )
+
+            var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
+
+
+            Scaffold(
+                bottomBar = {
+                    NavigationBar {
+                        items.forEachIndexed { index, item ->
+                            NavigationBarItem(
+                                selected = selectedItemIndex == index,
+                                onClick = {
+                                    selectedItemIndex = index
+                                    //navController.navigate("")
+                                },
+                                label = {
+                                        Text(text = item.title)
+                                },
+                                icon = {
+                                    BadgedBox(badge = {}) {
+                                        Icon(imageVector = if(index == selectedItemIndex) {
+                                            item.selectedIcon } else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            ) {
+
+            }
+
+            //AppContent(intentMap, intentSettings)
         }
     }
-
 
     @Composable
     fun AppContent(map: Intent, settings: Intent) {
