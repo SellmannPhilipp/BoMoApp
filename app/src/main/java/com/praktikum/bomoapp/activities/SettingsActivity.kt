@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -47,6 +48,8 @@ val lock = Any()
 fun Settings() {
     val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
     val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
+    val accViewModel = AccelerometerViewModel(LocalContext.current)
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -56,7 +59,7 @@ fun Settings() {
             Spacer(modifier = Modifier.height(20.dp))
             GpsTracking(gpsViewModel)
             Spacer(modifier = Modifier.height(20.dp))
-            Accelerometer()
+            Accelerometer(accViewModel)
             Spacer(modifier = Modifier.height(20.dp))
             Gyroscope()
             Spacer(modifier = Modifier.height(20.dp))
@@ -248,46 +251,11 @@ fun GpsTracking(viewModel: GpsTrackingViewModel) {
 }
 
 @Composable
-fun Accelerometer() {
-    val ctx = LocalContext.current
-    var accelerometerOn by remember { mutableStateOf(false) }
-    var btnTextEnabled = if (accelerometerOn) "Ein" else "Aus"
-    var accX by remember { mutableStateOf(0f) }
-    var accY by remember { mutableStateOf(0f) }
-    var accZ by remember { mutableStateOf(0f) }
+fun Accelerometer(viewModel: AccelerometerViewModel) {
+    var btnTextEnabled = if (viewModel.accelerometerOn) "Ein" else "Aus"
 
-    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
-    val sensorEventListener: SensorEventListener = object : SensorEventListener {
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        }
-        override fun onSensorChanged(event: SensorEvent) {
-            if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                accX = event.values[0]
-                accY = event.values[1]
-                accZ = event.values[2]
-                Log.d("Accelerometer", "X: $accX\nY: $accY\nZ: $accZ")
-                accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
-            }
-        }
-    }
-
-    Button(onClick = { accelerometerOn = !accelerometerOn }) {
+    Button(onClick = { viewModel.toggleAccelerometer() }) {
         Text(text = "Beschleunigungssensor: $btnTextEnabled")
-    }
-
-    DisposableEffect(accelerometerOn) {
-        if (accelerometerOn) {
-            Log.d("Accelerometer", "Accelerometer gestartet")
-            sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL)
-        } else {
-            Log.d("Accelerometer", "Accelerometer gestoppt")
-            sensorManager.unregisterListener(sensorEventListener)
-        }
-
-        onDispose {
-            // Cleanup, if necessary
-        }
     }
 }
 
