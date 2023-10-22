@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
@@ -43,6 +44,7 @@ val lock = Any()
 
 @Composable
 fun Settings() {
+    val gpsvm = GpsTrackingViewModel(LocalContext.current)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -50,7 +52,7 @@ fun Settings() {
         Column {
             NetworkTracking()
             Spacer(modifier = Modifier.height(20.dp))
-            GpsTracking()
+            GpsTracking(gpsvm)
             Spacer(modifier = Modifier.height(20.dp))
             Accelerometer()
             Spacer(modifier = Modifier.height(20.dp))
@@ -167,12 +169,14 @@ fun saveDataButton() {
     }
 }
 
+
+
 //Function to track location by network provider
 @SuppressLint("MissingPermission")
 @Composable
 fun NetworkTracking() {
     val ctx = LocalContext.current
-    val locationManager: LocationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    var locationManager: LocationManager? = null
 
     var latitude by remember { mutableStateOf(0.0) }
     var longitude by remember { mutableStateOf(0.0) }
@@ -181,11 +185,14 @@ fun NetworkTracking() {
 
     var btnTextEnabled = if (tracking) "Ein" else "Aus"
 
-    val locationListener: LocationListener = object : LocationListener {
+    var locationListener: LocationListener? = null
+
+    locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             latitude = location.latitude
             longitude = location.longitude
-            networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+            Log.d("Network-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
+            //networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
         }
     }
 
@@ -196,52 +203,48 @@ fun NetworkTracking() {
     DisposableEffect(tracking) {
         if (tracking) {
             Log.d("Network-Tracking", "Tracking wird gestartet")
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener)
-            Log.d("Network-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
+            locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener as LocationListener)
         } else {
             Log.d("Network-Tracking", "Tracking wird gestoppt")
-            locationManager.removeUpdates(locationListener)
+            locationManager?.removeUpdates(locationListener as LocationListener)
         }
 
         onDispose {
-            // Cleanup, if necessary
+            locationManager = null
+            locationListener = null
         }
     }
 }
 
-@SuppressLint("MissingPermission")
 @Composable
-fun GpsTracking() {
-    val ctx = LocalContext.current
-    val locationManager: LocationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-    var latitude by remember { mutableStateOf(0.0) }
-    var longitude by remember { mutableStateOf(0.0) }
-
-    var tracking by remember { mutableStateOf(false) }
+fun GpsTracking(viewModel: GpsTrackingViewModel) {
+    val latitude = viewModel.latitude
+    val longitude = viewModel.longitude
+    val tracking = viewModel.tracking
 
     var btnTextEnabled = if (tracking) "Ein" else "Aus"
 
-    val locationListener: LocationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            latitude = location.latitude
-            longitude = location.longitude
-            gpsList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+    val locationListener = remember {
+        object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                viewModel.onLocationChanged(location)
+                Log.d("Debug", "${location.latitude} ${location.longitude}")
+            }
         }
     }
 
-    Button(onClick = { tracking = !tracking }) {
+    Button(onClick = { viewModel.toggleTracking() }) {
         Text(text = "GPS-Tracking: $btnTextEnabled")
     }
 
     DisposableEffect(tracking) {
         if (tracking) {
             Log.d("GPS-Tracking", "Tracking wird gestartet")
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, locationListener)
-            Log.d("GPS-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
+            viewModel.startTracking(locationListener)
         } else {
             Log.d("GPS-Tracking", "Tracking wird gestoppt")
-            locationManager.removeUpdates(locationListener)
+            viewModel.stopTracking(locationListener)
         }
 
         onDispose {
@@ -261,7 +264,7 @@ fun Accelerometer() {
 
     val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-    val sensorEventListener = object : SensorEventListener {
+    val sensorEventListener: SensorEventListener = object : SensorEventListener {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
         }
         override fun onSensorChanged(event: SensorEvent) {
@@ -269,6 +272,7 @@ fun Accelerometer() {
                 accX = event.values[0]
                 accY = event.values[1]
                 accZ = event.values[2]
+                Log.d("Accelerometer", "X: $accX\nY: $accY\nZ: $accZ")
                 accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
             }
         }
@@ -282,7 +286,6 @@ fun Accelerometer() {
         if (accelerometerOn) {
             Log.d("Accelerometer", "Accelerometer gestartet")
             sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL)
-            Log.d("Accelerometer", "X: $accX\nY: $accY\nZ: $accZ")
         } else {
             Log.d("Accelerometer", "Accelerometer gestoppt")
             sensorManager.unregisterListener(sensorEventListener)
@@ -313,6 +316,7 @@ fun Gyroscope() {
                 gyrX = event.values[0]
                 gyrY = event.values[1]
                 gyrZ = event.values[2]
+                Log.d("Gyroscope", "X: $gyrX\nY: $gyrY\nZ: $gyrZ")
                 gyroscopeList.add(System.currentTimeMillis().toString()+","+gyrX+","+gyrY+","+gyrZ+"\n")
             }
         }
@@ -326,7 +330,6 @@ fun Gyroscope() {
         if (gyroscopeOn) {
             Log.d("Gyroscope", "Gyroscope gestartet")
             sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),SensorManager.SENSOR_DELAY_NORMAL)
-            Log.d("Gyroscope", "X: $gyrX\nY: $gyrY\nZ: $gyrZ")
         } else {
             Log.d("Gyroscope", "Gyroscope gestoppt")
             sensorManager.unregisterListener(sensorEventListener)
