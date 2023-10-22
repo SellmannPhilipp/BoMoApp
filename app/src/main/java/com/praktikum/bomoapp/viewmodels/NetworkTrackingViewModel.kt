@@ -9,11 +9,14 @@ import androidx.compose.runtime.setValue
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.util.Log
+import androidx.compose.runtime.remember
 
 
 class NetworkTrackingViewModel(context: Context) : ViewModel() {
-    private var locationManager: LocationManager? = null
-    private val locationListener: LocationListener? = null
+    private var locationManager: LocationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private var locationListener: LocationListener? = null
 
     var latitude by mutableStateOf(0.0)
         private set
@@ -22,7 +25,6 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
         private set
 
     var tracking by mutableStateOf(false)
-        private set
 
     fun onLocationChanged(location: Location) {
         latitude = location.latitude
@@ -30,24 +32,24 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
     }
 
     init {
-        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    }
-
-
-    fun toggleTracking() {
-        tracking = !tracking
-    }
-
-    @SuppressLint("MissingPermission")
-    fun startTracking(locationListener: LocationListener) {
-        if (locationManager != null) {
-            locationManager!!.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener
-            )
+        locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                Log.d("Network-Tracking", "${location.latitude} ${location.longitude}")
+            }
         }
     }
 
-    fun stopTracking(locationListener: LocationListener) {
-        locationManager?.removeUpdates(locationListener)
+    @SuppressLint("MissingPermission")
+    fun toggleTracking() {
+        tracking = !tracking
+
+        if (tracking) {
+            locationListener?.let {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, it)
+            }
+        } else {
+            locationListener?.let { locationManager.removeUpdates(it) }
+        }
     }
 }
+

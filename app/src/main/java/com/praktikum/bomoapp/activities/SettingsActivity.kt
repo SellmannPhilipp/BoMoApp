@@ -182,73 +182,22 @@ fun saveDataButton() {
 @SuppressLint("MissingPermission")
 @Composable
 fun NetworkTracking(viewModel: NetworkTrackingViewModel) {
-    val latitude = viewModel.latitude
-    val longitude = viewModel.longitude
-    val tracking = viewModel.tracking
+    var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
-    var btnTextEnabled = if (tracking) "Ein" else "Aus"
-
-    val locationListener = remember {
-        object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                viewModel.onLocationChanged(location)
-                Log.d("Debug", "${location.latitude} ${location.longitude}")
-            }
-        }
-    }
 
     Button(onClick = { viewModel.toggleTracking() }) {
         Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
-    DisposableEffect(tracking) {
-        if (tracking) {
-            Log.d("Network-Tracking", "Tracking wird gestartet")
-            viewModel.startTracking(locationListener)
-        } else {
-            Log.d("Network-Tracking", "Tracking wird gestoppt")
-            viewModel.stopTracking(locationListener)
-        }
-
-        onDispose {
-            // Cleanup, if necessary
-        }
-    }
 }
 
 @Composable
 fun GpsTracking(viewModel: GpsTrackingViewModel) {
-    val latitude = viewModel.latitude
-    val longitude = viewModel.longitude
-    val tracking = viewModel.tracking
+    var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
-    var btnTextEnabled = if (tracking) "Ein" else "Aus"
-
-    val locationListener = remember {
-        object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                viewModel.onLocationChanged(location)
-                Log.d("Debug", "${location.latitude} ${location.longitude}")
-            }
-        }
-    }
 
     Button(onClick = { viewModel.toggleTracking() }) {
         Text(text = "GPS-Tracking: $btnTextEnabled")
-    }
-
-    DisposableEffect(tracking) {
-        if (tracking) {
-            Log.d("GPS-Tracking", "Tracking wird gestartet")
-            viewModel.startTracking(locationListener)
-        } else {
-            Log.d("GPS-Tracking", "Tracking wird gestoppt")
-            viewModel.stopTracking(locationListener)
-        }
-
-        onDispose {
-            // Cleanup, if necessary
-        }
     }
 }
 
