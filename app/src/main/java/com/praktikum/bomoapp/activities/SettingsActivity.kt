@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
+import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
@@ -49,6 +50,7 @@ fun Settings() {
     val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
     val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
     val accViewModel = AccelerometerViewModel(LocalContext.current)
+    val gyrViewModel = GyroscopeViewModel(LocalContext.current)
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -61,7 +63,7 @@ fun Settings() {
             Spacer(modifier = Modifier.height(20.dp))
             Accelerometer(accViewModel)
             Spacer(modifier = Modifier.height(20.dp))
-            Gyroscope()
+            Gyroscope(gyrViewModel)
             Spacer(modifier = Modifier.height(20.dp))
             saveDataButton()
         }
@@ -260,45 +262,10 @@ fun Accelerometer(viewModel: AccelerometerViewModel) {
 }
 
 @Composable
-fun Gyroscope() {
-    val ctx = LocalContext.current
-    var gyroscopeOn by remember { mutableStateOf(false) }
-    var btnTextEnabled = if (gyroscopeOn) "Ein" else "Aus"
-    var gyrX by remember { mutableStateOf(0f) }
-    var gyrY by remember { mutableStateOf(0f) }
-    var gyrZ by remember { mutableStateOf(0f) }
+fun Gyroscope(viewModel: GyroscopeViewModel) {
+    var btnTextEnabled = if (viewModel.gyroscopeOn) "Ein" else "Aus"
 
-    val sensorManager: SensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
-    val sensorEventListener = object : SensorEventListener {
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        }
-        override fun onSensorChanged(event: SensorEvent) {
-            if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
-                gyrX = event.values[0]
-                gyrY = event.values[1]
-                gyrZ = event.values[2]
-                Log.d("Gyroscope", "X: $gyrX\nY: $gyrY\nZ: $gyrZ")
-                gyroscopeList.add(System.currentTimeMillis().toString()+","+gyrX+","+gyrY+","+gyrZ+"\n")
-            }
-        }
-    }
-
-    Button(onClick = { gyroscopeOn = !gyroscopeOn }) {
+    Button(onClick = { viewModel.toggleGyroscope() }) {
         Text(text = "Gyroskop: $btnTextEnabled")
-    }
-
-    DisposableEffect(gyroscopeOn) {
-        if (gyroscopeOn) {
-            Log.d("Gyroscope", "Gyroscope gestartet")
-            sensorManager.registerListener(sensorEventListener,sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),SensorManager.SENSOR_DELAY_NORMAL)
-        } else {
-            Log.d("Gyroscope", "Gyroscope gestoppt")
-            sensorManager.unregisterListener(sensorEventListener)
-        }
-
-        onDispose {
-            // Cleanup, if necessary
-        }
     }
 }
