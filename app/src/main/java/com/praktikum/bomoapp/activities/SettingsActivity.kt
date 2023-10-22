@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
+import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
@@ -44,15 +45,16 @@ val lock = Any()
 
 @Composable
 fun Settings() {
-    val gpsvm = GpsTrackingViewModel(LocalContext.current)
+    val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
+    val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column {
-            NetworkTracking()
+            NetworkTracking(networkViewModel)
             Spacer(modifier = Modifier.height(20.dp))
-            GpsTracking(gpsvm)
+            GpsTracking(gpsViewModel)
             Spacer(modifier = Modifier.height(20.dp))
             Accelerometer()
             Spacer(modifier = Modifier.height(20.dp))
@@ -174,45 +176,37 @@ fun saveDataButton() {
 //Function to track location by network provider
 @SuppressLint("MissingPermission")
 @Composable
-fun NetworkTracking() {
-    val ctx = LocalContext.current
-    var locationManager: LocationManager? = null
-
-    var latitude by remember { mutableStateOf(0.0) }
-    var longitude by remember { mutableStateOf(0.0) }
-
-    var tracking by remember { mutableStateOf(false) }
+fun NetworkTracking(viewModel: NetworkTrackingViewModel) {
+    val latitude = viewModel.latitude
+    val longitude = viewModel.longitude
+    val tracking = viewModel.tracking
 
     var btnTextEnabled = if (tracking) "Ein" else "Aus"
 
-    var locationListener: LocationListener? = null
-
-    locationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            latitude = location.latitude
-            longitude = location.longitude
-            Log.d("Network-Tracking", "Longitiude: $longitude\nLatitude: $latitude")
-            //networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+    val locationListener = remember {
+        object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                viewModel.onLocationChanged(location)
+                Log.d("Debug", "${location.latitude} ${location.longitude}")
+            }
         }
     }
 
-    Button(onClick = { tracking = !tracking }) {
+    Button(onClick = { viewModel.toggleTracking() }) {
         Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
     DisposableEffect(tracking) {
         if (tracking) {
             Log.d("Network-Tracking", "Tracking wird gestartet")
-            locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener as LocationListener)
+            viewModel.startTracking(locationListener)
         } else {
             Log.d("Network-Tracking", "Tracking wird gestoppt")
-            locationManager?.removeUpdates(locationListener as LocationListener)
+            viewModel.stopTracking(locationListener)
         }
 
         onDispose {
-            locationManager = null
-            locationListener = null
+            // Cleanup, if necessary
         }
     }
 }

@@ -9,10 +9,9 @@ import androidx.compose.runtime.setValue
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.util.Log
 
 
-class GpsTrackingViewModel(context: Context) : ViewModel() {
+class NetworkTrackingViewModel(context: Context) : ViewModel() {
     private var locationManager: LocationManager? = null
     private val locationListener: LocationListener? = null
 
@@ -43,7 +42,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     fun startTracking(locationListener: LocationListener) {
         if (locationManager != null) {
             locationManager!!.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000L, 0f, locationListener
+                LocationManager.NETWORK_PROVIDER, 1000L, 0f, locationListener
             )
         }
     }
