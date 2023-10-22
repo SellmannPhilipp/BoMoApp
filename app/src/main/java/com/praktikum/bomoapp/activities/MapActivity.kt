@@ -1,4 +1,5 @@
 package com.praktikum.bomoapp.activities
+
 import android.preference.PreferenceManager
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
