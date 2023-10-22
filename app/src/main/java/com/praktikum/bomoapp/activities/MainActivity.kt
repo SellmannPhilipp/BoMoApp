@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -10,8 +11,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,6 +68,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -73,6 +77,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.praktikum.bomoapp.ForegroundService
 
 
@@ -96,11 +105,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //val switch = findViewById<Switch>(R.id.my)
+
         setContent {
-            if(ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 0)
-            }
+            getPermission()
             // Initialisieren Sie die SharedPreferences
             sharedPreferences = getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
             serviceIntent = Intent(LocalContext.current, ForegroundService::class.java)
@@ -171,6 +178,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun getPermission() {
+        Dexter.withContext(this)
+            .withPermissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    report.let {
+
+                        if (report.areAllPermissionsGranted()) {
+                            //Toast.makeText(this@MainActivity, "Permissions Granted", Toast.LENGTH_SHORT).show()
+                        } else {
+                            //Toast.makeText(this@MainActivity, "Please Grant Permissions to use the app", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest?>?, token: PermissionToken?) {
+                    token?.continuePermissionRequest()
+                }
+            }).withErrorListener{
+                Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
+            }.check()
+    }
 
     @Composable
     fun AppContent(map: Intent, settings: Intent) {

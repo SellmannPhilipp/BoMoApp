@@ -1,9 +1,11 @@
 package com.praktikum.bomoapp.activities
+import android.preference.PreferenceManager
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.util.GeoPoint
@@ -16,14 +18,19 @@ fun OsmdroidMapView() {
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             val mapView = MapView(context)
-            setMapCamera(mapView, 51.4818, 7.2162, 20)
+
+            // Fügen Sie hier die Konfigurationseinstellungen hinzu
+            Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+            Configuration.getInstance().userAgentValue = "BoMoApp"
+
+            setMapCamera(mapView, 51.4818, 7.2162, 18)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
-            mapView.setBuiltInZoomControls(true)
             mapView.setMultiTouchControls(true)
             mapView
         }
     )
 }
+
 
 fun setMapCamera(view: MapView, latitude: Double, longitude: Double, zoomLevel: Int) {
     val mapView = view
