@@ -39,15 +39,23 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     }
 
     @SuppressLint("MissingPermission")
+    fun start() {
+        locationListener?.let {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
+        }
+    }
+
+    fun stop() {
+        locationListener?.let { locationManager.removeUpdates(it) }
+    }
+
     fun toggleTracking() {
         tracking = !tracking
 
         if (tracking) {
-            locationListener?.let {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
-            }
+            start()
         } else {
-            locationListener?.let { locationManager.removeUpdates(it) }
+            stop()
         }
     }
 }
