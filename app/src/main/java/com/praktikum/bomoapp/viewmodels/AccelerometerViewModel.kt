@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.praktikum.bomoapp.DataSaver
 import kotlinx.coroutines.launch
 
 class AccelerometerViewModel(context: Context) : ViewModel() {
@@ -39,7 +40,8 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
                     accX = event.values[0]
                     accY = event.values[1]
                     accZ = event.values[2]
-                    Log.d("Debug", "$accX\n$accY\n$accZ")
+                    Log.d("Accelerometer", "$accX\n$accY\n$accZ")
+                    DataSaver.accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
                 }
             }
         }

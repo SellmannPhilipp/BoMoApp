@@ -11,6 +11,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
 import androidx.compose.runtime.remember
+import com.praktikum.bomoapp.DataSaver
 
 
 class NetworkTrackingViewModel(context: Context) : ViewModel() {
@@ -35,6 +36,7 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 Log.d("Network-Tracking", "${location.latitude} ${location.longitude}")
+                DataSaver.networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
             }
         }
     }

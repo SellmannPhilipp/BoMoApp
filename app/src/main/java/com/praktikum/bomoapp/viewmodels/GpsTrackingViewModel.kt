@@ -11,6 +11,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
 import androidx.compose.runtime.remember
+import com.praktikum.bomoapp.DataSaver
 
 
 class GpsTrackingViewModel(context: Context) : ViewModel() {
@@ -34,6 +35,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 Log.d("GPS-Tracking", "${location.latitude} ${location.longitude}")
+                DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
             }
         }
     }

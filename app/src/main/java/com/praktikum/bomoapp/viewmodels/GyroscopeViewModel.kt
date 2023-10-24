@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.praktikum.bomoapp.DataSaver
 import kotlinx.coroutines.launch
 
 class GyroscopeViewModel(context: Context) : ViewModel() {
@@ -38,7 +39,8 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
                 gyrX = event.values[0]
                 gyrY = event.values[1]
                 gyrZ = event.values[2]
-                Log.d("Debug", "$gyrX\n$gyrY\n$gyrZ")
+                Log.d("Gyroscope", "$gyrX\n$gyrY\n$gyrZ")
+                DataSaver.gyroscopeList.add(System.currentTimeMillis().toString()+","+gyrX+","+gyrY+","+gyrZ+"\n")
             }
         }
     }
