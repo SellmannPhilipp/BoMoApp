@@ -17,7 +17,7 @@ class DataSaver : ViewModel() {
         val gyroscopeList = mutableListOf("")
         val lock = Any()
 
-        fun saveAllDataServer(){
+        fun saveAllData(){
             var gpsListCopy: List<String>
             var networkListCopy: List<String>
             var accelerometerListCopy: List<String>

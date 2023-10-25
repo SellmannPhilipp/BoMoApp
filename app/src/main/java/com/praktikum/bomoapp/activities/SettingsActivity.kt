@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
@@ -79,16 +80,26 @@ fun Settings() {
             ) {
                 Column {
                     SaveDataButton()
+                    Spacer(modifier = Modifier.height(20.dp))
+                    OpenBrowser()
                 }
             }
         }
     }
 }
 
+@Composable
+fun OpenBrowser() {
+    val context = LocalContext.current
+    Button(onClick = { ChromeTab.ShowFilesInBrowser(context)}) {
+        Text(text = "Daten auf dem Server zeigen")
+    }
+}
+
 
 @Composable
 fun SaveDataButton() {
-    Button(onClick = { DataSaver.saveAllDataServer()}) {
+    Button(onClick = { DataSaver.saveAllData()}) {
         Text(text = "Daten auf Server Speichern")
     }
 }
