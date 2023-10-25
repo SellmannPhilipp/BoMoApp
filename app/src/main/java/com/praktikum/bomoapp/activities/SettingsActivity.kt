@@ -1,15 +1,6 @@
 package com.praktikum.bomoapp.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,13 +18,6 @@ import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
-import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttMessage
-import java.io.File
-import java.io.FileOutputStream
-import kotlin.concurrent.thread
-
 
 val gpsList = mutableListOf("")
 val networkList = mutableListOf("")
@@ -65,6 +44,8 @@ fun Settings() {
             Accelerometer(accViewModel)
             Spacer(modifier = Modifier.height(20.dp))
             Gyroscope(gyrViewModel)
+            Spacer(modifier = Modifier.height(20.dp))
+            Compass()
             Spacer(modifier = Modifier.height(20.dp))
             saveDataButton()
         }
@@ -118,5 +99,12 @@ fun Gyroscope(viewModel: GyroscopeViewModel) {
 
     Button(onClick = { viewModel.toggleGyroscope() }) {
         Text(text = "Gyroskop: $btnTextEnabled")
+    }
+}
+
+@Composable
+fun Compass() {
+    Button(onClick = {  }) {
+        Text(text = "Kompass")
     }
 }
