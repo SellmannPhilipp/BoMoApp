@@ -53,36 +53,23 @@ class DataSaver : ViewModel() {
                 options.isCleanSession = true
                 val mqttClient = MqttClient(serverUri, clientId, null)
                 mqttClient.connect(options)
-                var iterator = gpsListCopy.iterator()
-                while (iterator.hasNext()) {
-                    val element = iterator.next()
-                    val message = MqttMessage()
-                    message.payload = element.toByteArray()
-                    mqttClient.publish("lokalisierung/gps", message)
-                }
-                iterator = networkListCopy.iterator()
-                while (iterator.hasNext()) {
-                    val element = iterator.next()
-                    val message = MqttMessage()
-                    message.payload = element.toByteArray()
-                    mqttClient.publish("lokalisierung/network", message)
-                }
-                iterator = accelerometerListCopy.iterator()
-                while (iterator.hasNext()) {
-                    val element = iterator.next()
-                    val message = MqttMessage()
-                    message.payload = element.toByteArray()
-                    mqttClient.publish("lokalisierung/acc", message)
-                }
-                iterator = gyroscopeListCopy.iterator()
-                while (iterator.hasNext()) {
-                    val element = iterator.next()
-                    val message = MqttMessage()
-                    message.payload = element.toByteArray()
-                    mqttClient.publish("lokalisierung/gyro", message)
-                }
+                sendToServer(mqttClient,"gps",gpsListCopy)
+                sendToServer(mqttClient,"network",networkListCopy)
+                sendToServer(mqttClient,"acc",accelerometerListCopy)
+                sendToServer(mqttClient,"gyro",gyroscopeListCopy)
                 mqttClient.disconnect()
             }
+        }
+
+        private fun sendToServer(mqttClient: MqttClient, topic: String, list: List<String>) {
+            val iterator = list.iterator()
+            while (iterator.hasNext()) {
+                val element = iterator.next()
+                val message = MqttMessage()
+                message.payload = element.toByteArray()
+                mqttClient.publish("lokalisierung/"+topic, message)
+            }
+
         }
 
         private fun writeFile(dateiName: String,liste:  List<String>) {
