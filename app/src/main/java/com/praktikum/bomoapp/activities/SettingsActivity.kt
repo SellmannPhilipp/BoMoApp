@@ -19,12 +19,6 @@ import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 
-val gpsList = mutableListOf("")
-val networkList = mutableListOf("")
-val accelerometerList = mutableListOf("")
-val gyroscopeList = mutableListOf("")
-val lock = Any()
-
 @Composable
 fun Settings() {
     val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
