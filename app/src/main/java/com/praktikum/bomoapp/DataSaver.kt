@@ -35,47 +35,14 @@ class DataSaver : ViewModel() {
 
             //Dateispeicherung Lokal
             thread {
-                var outputStream : FileOutputStream
-                if (File("/storage/emulated/0/Download/gps.txt").exists()){
-                    {}
-                } else {
-                    outputStream = FileOutputStream("/storage/emulated/0/Download/gps.txt")
-                    outputStream.write("Time,Latitude,Longitude\n".toByteArray())
-                    outputStream.close()
-                }
-                if (File("/storage/emulated/0/Download/network.txt").exists()) {
-
-                } else {
-                    outputStream = FileOutputStream("/storage/emulated/0/Download/network.txt")
-                    outputStream.write("Time,Latitude,Longitude\n".toByteArray())
-                    outputStream.close()
-                }
-                if (File("/storage/emulated/0/Download/acc.txt").exists()) {
-
-                } else {
-                    outputStream = FileOutputStream("/storage/emulated/0/Download/acc.txt")
-                    outputStream.write("Time,accX,accY,accZ\n".toByteArray())
-                    outputStream.close()
-                }
-                if (File("/storage/emulated/0/Download/gyro.txt").exists()) {
-
-                } else {
-                    outputStream = FileOutputStream("/storage/emulated/0/Download/gyro.txt")
-                    outputStream.write("Time,gyrX,gyrY,gyrZ\n".toByteArray())
-                    outputStream.close()
-                }
-                outputStream = FileOutputStream("/storage/emulated/0/Download/gps.txt",true)
-                outputStream.write(gpsListCopy.joinToString("").toByteArray())
-                outputStream.close()
-                outputStream = FileOutputStream("/storage/emulated/0/Download/network.txt",true)
-                outputStream.write(networkListCopy.joinToString("").toByteArray())
-                outputStream.close()
-                outputStream = FileOutputStream("/storage/emulated/0/Download/acc.txt",true)
-                outputStream.write(accelerometerListCopy.joinToString("").toByteArray())
-                outputStream.close()
-                outputStream = FileOutputStream("/storage/emulated/0/Download/gyro.txt",true)
-                outputStream.write(gyroscopeListCopy.joinToString("").toByteArray())
-                outputStream.close()
+                checkForFile("gps.txt")
+                checkForFile("network.txt")
+                checkForFile("acc.txt")
+                checkForFile("gyro.txt")
+                writeFile("gps.txt",gpsListCopy)
+                writeFile("network.txt",networkListCopy)
+                writeFile("acc.txt",accelerometerListCopy)
+                writeFile("gyro.txt",gyroscopeListCopy)
             }
 
             //Dateispeicherung Server
@@ -116,6 +83,22 @@ class DataSaver : ViewModel() {
                 }
                 mqttClient.disconnect()
             }
+        }
+
+        private fun writeFile(dateiName: String,liste:  List<String>) {
+            val outputStream = FileOutputStream("/storage/emulated/0/Download/"+dateiName,true)
+            outputStream.write(liste.joinToString("").toByteArray())
+            outputStream.close()
+        }
+
+        private fun checkForFile(dateiName: String) {
+
+            if (!File("/storage/emulated/0/Download/"+dateiName).exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/"+dateiName)
+                outputStream.write("Time,Latitude,Longitude\n".toByteArray())
+                outputStream.close()
+            }
+
         }
     }
 }
