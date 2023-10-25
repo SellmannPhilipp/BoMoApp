@@ -35,7 +35,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 Log.d("GPS-Tracking", "${location.latitude} ${location.longitude}")
-                DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+                DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+location.latitude+","+location.longitude+"\n")
             }
         }
     }

@@ -36,7 +36,7 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
         locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 Log.d("Network-Tracking", "${location.latitude} ${location.longitude}")
-                DataSaver.networkList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+                DataSaver.networkList.add(System.currentTimeMillis().toString()+","+location.latitude+","+location.longitude+"\n")
             }
         }
     }
