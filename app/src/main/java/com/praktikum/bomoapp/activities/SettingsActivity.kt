@@ -5,15 +5,21 @@ import GpsTrackingViewModel
 import GyroscopeViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
+import android.hardware.SensorManager
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 
 @Composable
 fun Settings() {
@@ -64,6 +71,8 @@ fun Settings() {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
+                    Menu()
+                    Spacer(modifier = Modifier.height(20.dp))
                     Accelerometer(accViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     Gyroscope(gyrViewModel)
@@ -87,7 +96,6 @@ fun Settings() {
         }
     }
 }
-
 @Composable
 fun OpenBrowser() {
     val context = LocalContext.current
@@ -133,7 +141,7 @@ fun GpsTracking(viewModel: GpsTrackingViewModel) {
 fun Accelerometer(viewModel: AccelerometerViewModel) {
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
-    Button(onClick = { viewModel.toggleAccelerometer() }) {
+    Button(onClick = { viewModel.toggleAccelerometer(SamplingRateViewModel.samplingRate) }) {
         Text(text = "Beschleunigungssensor: $btnTextEnabled")
     }
 }
@@ -142,7 +150,7 @@ fun Accelerometer(viewModel: AccelerometerViewModel) {
 fun Gyroscope(viewModel: GyroscopeViewModel) {
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
-    Button(onClick = { viewModel.toggleGyroscope() }) {
+    Button(onClick = { viewModel.toggleGyroscope(SamplingRateViewModel.samplingRate) }) {
         Text(text = "Gyroskop: $btnTextEnabled")
     }
 }
@@ -151,5 +159,66 @@ fun Gyroscope(viewModel: GyroscopeViewModel) {
 fun Compass() {
     Button(onClick = {  }) {
         Text(text = "Kompass")
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Menu() {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("Samplingrate") }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {isExpanded = it}
+    ) {
+        TextField(
+            value = selectedText,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
+        
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "Normal")},
+                onClick = {
+                    selectedText = "Normal"
+                    SamplingRateViewModel.samplingRate = SensorManager.SENSOR_DELAY_NORMAL
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Fastest")},
+                onClick = {
+                    selectedText = "Fastest"
+                    SamplingRateViewModel.samplingRate = SensorManager.SENSOR_DELAY_FASTEST
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Game")},
+                onClick = {
+                    selectedText = "Game"
+                    SamplingRateViewModel.samplingRate = SensorManager.SENSOR_DELAY_GAME
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "UI")},
+                onClick = {
+                    selectedText = "UI"
+                    SamplingRateViewModel.samplingRate = SensorManager.SENSOR_DELAY_UI
+                    isExpanded = false
+                }
+            )
+        }
     }
 }

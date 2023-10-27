@@ -23,7 +23,7 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
         tracking = sharedPreferences.getBoolean("tracking", false)
     }
 
-    fun start() {
+    fun start(samplingRate: Int) {
         this.sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
         viewModelScope.launch {
             sensorManager.registerListener(
@@ -41,7 +41,7 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun toggleGyroscope() {
+    fun toggleGyroscope(samplingRate: Int) {
         tracking = !tracking
 
         // SharedPreferences-Instanz abrufen
@@ -57,7 +57,7 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
         editor.apply()
 
         if (tracking) {
-            start()
+            start(samplingRate)
         } else {
             stop()
         }

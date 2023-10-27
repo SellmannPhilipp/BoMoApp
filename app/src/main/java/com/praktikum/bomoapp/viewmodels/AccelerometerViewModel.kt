@@ -22,13 +22,13 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
         tracking = sharedPreferences.getBoolean("tracking", false)
     }
 
-    fun start() {
+    fun start(samplingRate: Int) {
         this.sensorEventListener  = AccelerometerListenerSingleton.getInstance(ctx)
         viewModelScope.launch {
             sensorManager.registerListener(
                 sensorEventListener,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL
+                samplingRate,
             )
         }
     }
@@ -40,7 +40,7 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun toggleAccelerometer() {
+    fun toggleAccelerometer(samplingRate: Int) {
         tracking = !tracking
 
         // SharedPreferences-Instanz abrufen
@@ -56,7 +56,7 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
         editor.apply()
 
         if (tracking) {
-            start()
+            start(samplingRate)
         } else {
             stop()
         }
