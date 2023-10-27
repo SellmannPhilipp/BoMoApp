@@ -1,11 +1,11 @@
-package com.praktikum.bomoapp
+package com.praktikum.bomoapp.Singletons
 
 import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.util.Log
 
-object LocationListenerSingleton {
+object NetworkLocationListenerSingleton {
     private var instance: LocationListener? = null
 
     fun getInstance(context: Context): LocationListener {
@@ -18,7 +18,7 @@ object LocationListenerSingleton {
     private fun createLocationListener(context: Context): LocationListener {
         return object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                Log.d("GPS-Tracking", "${location.latitude} ${location.longitude}")
+                Log.d("Network-Tracking", "${location.latitude} ${location.longitude}")
             }
         }
     }

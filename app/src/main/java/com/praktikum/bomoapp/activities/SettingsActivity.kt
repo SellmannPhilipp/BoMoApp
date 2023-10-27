@@ -1,6 +1,7 @@
 package com.praktikum.bomoapp.activities
 
 import GpsTrackingViewModel
+import NetworkTrackingViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
-import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 
 @Composable
 fun Settings() {

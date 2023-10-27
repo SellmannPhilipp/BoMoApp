@@ -5,7 +5,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.*
-import com.praktikum.bomoapp.LocationListenerSingleton
+import com.praktikum.bomoapp.Singletons.GpsLocationListenerSingleton
 
 
 class GpsTrackingViewModel(context: Context) : ViewModel() {
@@ -28,7 +28,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     }
 
     init {
-        val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("GPS-Tracking", Context.MODE_PRIVATE)
 
         // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
         tracking = sharedPreferences.getBoolean("tracking", false)
@@ -36,7 +36,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
 
     @SuppressLint("MissingPermission")
     fun start() {
-        val locationListener = LocationListenerSingleton.getInstance(ctx)
+        val locationListener = GpsLocationListenerSingleton.getInstance(ctx)
 
         if (tracking) {
             locationListener?.let {
@@ -46,7 +46,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     }
 
     fun stop() {
-        val locationListener = LocationListenerSingleton.getInstance(ctx)
+        val locationListener = GpsLocationListenerSingleton.getInstance(ctx)
         locationListener?.let { locationManager.removeUpdates(it) }
     }
 
@@ -54,7 +54,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
         tracking = !tracking
 
         // SharedPreferences-Instanz abrufen
-        val sharedPreferences = ctx.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = ctx.getSharedPreferences("GPS-Tracking", Context.MODE_PRIVATE)
 
         // Editor zum Bearbeiten der SharedPreferences
         val editor = sharedPreferences.edit()
