@@ -14,18 +14,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     private var locationListener: LocationListener? = null
     private var ctx = context
 
-    var latitude by mutableStateOf(0.0)
-        private set
-
-    var longitude by mutableStateOf(0.0)
-        private set
-
     var tracking by mutableStateOf(false)
-
-    fun onLocationChanged(location: Location) {
-        latitude = location.latitude
-        longitude = location.longitude
-    }
 
     init {
         val sharedPreferences = context.getSharedPreferences("GPS-Tracking", Context.MODE_PRIVATE)
@@ -36,7 +25,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
 
     @SuppressLint("MissingPermission")
     fun start() {
-        val locationListener = GpsLocationListenerSingleton.getInstance(ctx)
+        this.locationListener = GpsLocationListenerSingleton.getInstance(ctx)
 
         if (tracking) {
             locationListener?.let {
@@ -46,7 +35,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     }
 
     fun stop() {
-        val locationListener = GpsLocationListenerSingleton.getInstance(ctx)
+        this.locationListener = GpsLocationListenerSingleton.getInstance(ctx)
         locationListener?.let { locationManager.removeUpdates(it) }
     }
 

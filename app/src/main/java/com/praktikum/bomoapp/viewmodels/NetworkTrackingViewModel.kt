@@ -14,18 +14,8 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
     private var locationListener: LocationListener? = null
     private var ctx = context
 
-    var latitude by mutableStateOf(0.0)
-        private set
-
-    var longitude by mutableStateOf(0.0)
-        private set
 
     var tracking by mutableStateOf(false)
-
-    fun onLocationChanged(location: Location) {
-        latitude = location.latitude
-        longitude = location.longitude
-    }
 
     init {
         val sharedPreferences = context.getSharedPreferences("NetworkTracking", Context.MODE_PRIVATE)
@@ -36,7 +26,7 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
 
     @SuppressLint("MissingPermission")
     fun start() {
-        val locationListener = NetworkLocationListenerSingleton.getInstance(ctx)
+        this.locationListener = NetworkLocationListenerSingleton.getInstance(ctx)
 
         if (tracking) {
             locationListener?.let {
@@ -46,7 +36,7 @@ class NetworkTrackingViewModel(context: Context) : ViewModel() {
     }
 
     fun stop() {
-        val locationListener = NetworkLocationListenerSingleton.getInstance(ctx)
+        this.locationListener = NetworkLocationListenerSingleton.getInstance(ctx)
         locationListener?.let { locationManager.removeUpdates(it) }
     }
 

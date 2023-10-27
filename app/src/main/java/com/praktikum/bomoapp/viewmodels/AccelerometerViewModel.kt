@@ -20,24 +20,21 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
 
         // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
         tracking = sharedPreferences.getBoolean("tracking", false)
-
-        // SensorEventListener aus dem Singleton abrufen und initialisieren
-        sensorEventListener = AccelerometerListenerSingleton.getInstance(ctx)
     }
 
     fun start() {
-        if (tracking) {
-            viewModelScope.launch {
-                sensorManager.registerListener(
-                    sensorEventListener,
-                    sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                    SensorManager.SENSOR_DELAY_NORMAL
-                )
-            }
+        this.sensorEventListener  = AccelerometerListenerSingleton.getInstance(ctx)
+        viewModelScope.launch {
+            sensorManager.registerListener(
+                sensorEventListener,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
         }
     }
 
     fun stop() {
+        this.sensorEventListener  = AccelerometerListenerSingleton.getInstance(ctx)
         sensorEventListener?.let {
             sensorManager.unregisterListener(it)
         }

@@ -21,13 +21,10 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
 
         // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
         tracking = sharedPreferences.getBoolean("tracking", false)
-
-        // SensorEventListener aus dem Singleton abrufen und initialisieren
-        sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
     }
 
     fun start() {
-        var sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
+        this.sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
         viewModelScope.launch {
             sensorManager.registerListener(
                 sensorEventListener,
@@ -38,7 +35,7 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
     }
 
     fun stop() {
-        var sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
+        this.sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
         sensorEventListener?.let {
             sensorManager.unregisterListener(it)
         }
