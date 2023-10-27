@@ -1,56 +1,32 @@
-package com.praktikum.bomoapp.viewmodels
-
 import android.content.Context
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.praktikum.bomoapp.DataSaver
 import kotlinx.coroutines.launch
 
 class AccelerometerViewModel(context: Context) : ViewModel() {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private var sensorEventListener: SensorEventListener? = null
+    private var ctx = context
 
-    var accelerometerOn by mutableStateOf(false)
-
-    var accX by mutableStateOf(0f)
-        private set
-
-    var accY by mutableStateOf(0f)
-        private set
-
-    var accZ by mutableStateOf(0f)
-        private set
+    var tracking by mutableStateOf(false)
 
     init {
-        sensorEventListener = object : SensorEventListener {
-            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-                // Hier kann ggf. die Genauigkeit des Sensors behandelt werden
-            }
+        val sharedPreferences = context.getSharedPreferences("Accelerometer", Context.MODE_PRIVATE)
 
-            override fun onSensorChanged(event: SensorEvent) {
-                if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                    accX = event.values[0]
-                    accY = event.values[1]
-                    accZ = event.values[2]
-                    Log.d("Accelerometer", "$accX\n$accY\n$accZ")
-                    DataSaver.accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
-                }
-            }
-        }
+        // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
+        tracking = sharedPreferences.getBoolean("tracking", false)
+
+        // SensorEventListener aus dem Singleton abrufen und initialisieren
+        sensorEventListener = AccelerometerListenerSingleton.getInstance(ctx)
     }
 
-    fun toggleAccelerometer() {
-        accelerometerOn = !accelerometerOn
-
-        if (accelerometerOn) {
+    fun start() {
+        if (tracking) {
             viewModelScope.launch {
                 sensorManager.registerListener(
                     sensorEventListener,
@@ -58,14 +34,34 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
                     SensorManager.SENSOR_DELAY_NORMAL
                 )
             }
-        } else {
-            sensorManager.unregisterListener(sensorEventListener)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        accelerometerOn = false
-        sensorManager.unregisterListener(sensorEventListener)
+    fun stop() {
+        sensorEventListener?.let {
+            sensorManager.unregisterListener(it)
+        }
+    }
+
+    fun toggleAccelerometer() {
+        tracking = !tracking
+
+        // SharedPreferences-Instanz abrufen
+        val sharedPreferences = ctx.getSharedPreferences("Accelerometer", Context.MODE_PRIVATE)
+
+        // Editor zum Bearbeiten der SharedPreferences
+        val editor = sharedPreferences.edit()
+
+        // Den Wert von 'tracking' speichern
+        editor.putBoolean("tracking", tracking)
+
+        // Änderungen speichern
+        editor.apply()
+
+        if (tracking) {
+            start()
+        } else {
+            stop()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.activities
 
+import AccelerometerViewModel
 import GpsTrackingViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
@@ -23,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
-import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
 import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 
 @Composable
@@ -131,7 +131,7 @@ fun GpsTracking(viewModel: GpsTrackingViewModel) {
 
 @Composable
 fun Accelerometer(viewModel: AccelerometerViewModel) {
-    var btnTextEnabled = if (viewModel.accelerometerOn) "Ein" else "Aus"
+    var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
     Button(onClick = { viewModel.toggleAccelerometer() }) {
         Text(text = "Beschleunigungssensor: $btnTextEnabled")
