@@ -2,6 +2,7 @@ package com.praktikum.bomoapp.activities
 
 import AccelerometerViewModel
 import GpsTrackingViewModel
+import GyroscopeViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
@@ -24,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
-import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 
 @Composable
 fun Settings() {
@@ -140,7 +140,7 @@ fun Accelerometer(viewModel: AccelerometerViewModel) {
 
 @Composable
 fun Gyroscope(viewModel: GyroscopeViewModel) {
-    var btnTextEnabled = if (viewModel.gyroscopeOn) "Ein" else "Aus"
+    var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
     Button(onClick = { viewModel.toggleGyroscope() }) {
         Text(text = "Gyroskop: $btnTextEnabled")

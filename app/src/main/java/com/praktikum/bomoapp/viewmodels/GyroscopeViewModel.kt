@@ -1,69 +1,68 @@
-package com.praktikum.bomoapp.viewmodels
-
 import android.content.Context
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.Singletons.GyroscopeSensorEventListenerSingleton
 import kotlinx.coroutines.launch
 
 class GyroscopeViewModel(context: Context) : ViewModel() {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private var sensorEventListener: SensorEventListener? = null
+    private var ctx = context
 
-    var gyroscopeOn by mutableStateOf(false)
-
-    var gyrX by mutableStateOf(0f)
-        private set
-
-    var gyrY by mutableStateOf(0f)
-        private set
-
-    var gyrZ by mutableStateOf(0f)
-        private set
+    var tracking by mutableStateOf(false)
 
     init {
-        sensorEventListener = object : SensorEventListener {
-            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-                // Hier kann ggf. die Genauigkeit des Sensors behandelt werden
-            }
+        val sharedPreferences = context.getSharedPreferences("Gyroscope", Context.MODE_PRIVATE)
 
-            override fun onSensorChanged(event: SensorEvent) {
-                gyrX = event.values[0]
-                gyrY = event.values[1]
-                gyrZ = event.values[2]
-                Log.d("Gyroscope", "$gyrX\n$gyrY\n$gyrZ")
-                DataSaver.gyroscopeList.add(System.currentTimeMillis().toString()+","+gyrX+","+gyrY+","+gyrZ+"\n")
-            }
+        // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
+        tracking = sharedPreferences.getBoolean("tracking", false)
+
+        // SensorEventListener aus dem Singleton abrufen und initialisieren
+        sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
+    }
+
+    fun start() {
+        var sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
+        viewModelScope.launch {
+            sensorManager.registerListener(
+                sensorEventListener,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+        }
+    }
+
+    fun stop() {
+        var sensorEventListener = GyroscopeSensorEventListenerSingleton.getInstance(ctx)
+        sensorEventListener?.let {
+            sensorManager.unregisterListener(it)
         }
     }
 
     fun toggleGyroscope() {
-        gyroscopeOn = !gyroscopeOn
+        tracking = !tracking
 
-        if (gyroscopeOn) {
-            viewModelScope.launch {
-                sensorManager.registerListener(
-                    sensorEventListener,
-                    sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                    SensorManager.SENSOR_DELAY_NORMAL
-                )
-            }
+        // SharedPreferences-Instanz abrufen
+        val sharedPreferences = ctx.getSharedPreferences("Gyroscope", Context.MODE_PRIVATE)
+
+        // Editor zum Bearbeiten der SharedPreferences
+        val editor = sharedPreferences.edit()
+
+        // Den Wert von 'tracking' speichern
+        editor.putBoolean("tracking", tracking)
+
+        // Änderungen speichern
+        editor.apply()
+
+        if (tracking) {
+            start()
         } else {
-            sensorManager.unregisterListener(sensorEventListener)
+            stop()
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        gyroscopeOn = false
-        sensorManager.unregisterListener(sensorEventListener)
     }
 }
