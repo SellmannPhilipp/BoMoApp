@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.activities
 
+import GpsTrackingViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.viewmodels.AccelerometerViewModel
-import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import com.praktikum.bomoapp.viewmodels.GyroscopeViewModel
 import com.praktikum.bomoapp.viewmodels.NetworkTrackingViewModel
 

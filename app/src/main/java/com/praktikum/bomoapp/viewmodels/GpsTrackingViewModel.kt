@@ -1,22 +1,18 @@
-package com.praktikum.bomoapp.viewmodels
-
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.util.Log
-import androidx.compose.runtime.remember
-import com.praktikum.bomoapp.DataSaver
+import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.*
+import com.praktikum.bomoapp.LocationListenerSingleton
 
 
 class GpsTrackingViewModel(context: Context) : ViewModel() {
+
     private var locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private var locationListener: LocationListener? = null
+    private var ctx = context
 
     var latitude by mutableStateOf(0.0)
         private set
@@ -32,27 +28,42 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     }
 
     init {
-        locationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                Log.d("GPS-Tracking", "${location.latitude} ${location.longitude}")
-                DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+location.latitude+","+location.longitude+"\n")
-            }
-        }
+        val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+
+        // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
+        tracking = sharedPreferences.getBoolean("tracking", false)
     }
 
     @SuppressLint("MissingPermission")
     fun start() {
-        locationListener?.let {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
+        val locationListener = LocationListenerSingleton.getInstance(ctx)
+
+        if (tracking) {
+            locationListener?.let {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
+            }
         }
     }
 
     fun stop() {
+        val locationListener = LocationListenerSingleton.getInstance(ctx)
         locationListener?.let { locationManager.removeUpdates(it) }
     }
 
     fun toggleTracking() {
         tracking = !tracking
+
+        // SharedPreferences-Instanz abrufen
+        val sharedPreferences = ctx.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+
+        // Editor zum Bearbeiten der SharedPreferences
+        val editor = sharedPreferences.edit()
+
+        // Den Wert von 'tracking' speichern
+        editor.putBoolean("tracking", tracking)
+
+        // Änderungen speichern
+        editor.apply()
 
         if (tracking) {
             start()
@@ -61,4 +72,3 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
         }
     }
 }
-
