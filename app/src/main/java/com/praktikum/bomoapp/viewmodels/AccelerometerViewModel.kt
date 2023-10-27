@@ -40,7 +40,7 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
                     accX = event.values[0]
                     accY = event.values[1]
                     accZ = event.values[2]
-                    Log.d("Accelerometer", "$accX\n$accY\n$accZ")
+                    //Log.d("Accelerometer", "$accX\n$accY\n$accZ")
                     DataSaver.accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
                 }
             }
@@ -49,7 +49,7 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
 
     fun toggleAccelerometer() {
         accelerometerOn = !accelerometerOn
-
+        Log.d("Debug", "--------------------------------- ACC toggle")
         if (accelerometerOn) {
             viewModelScope.launch {
                 sensorManager.registerListener(
@@ -68,4 +68,9 @@ class AccelerometerViewModel(context: Context) : ViewModel() {
         accelerometerOn = false
         sensorManager.unregisterListener(sensorEventListener)
     }
+
+    fun getAccData(): String{
+        return "$accX $accY $accZ";
+    }
+
 }
