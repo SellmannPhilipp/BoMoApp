@@ -38,6 +38,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.BarChart
+import co.yml.charts.ui.barchart.models.BarChartData
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.BarStyle
+import co.yml.charts.ui.barchart.models.SelectionHighlightData
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.praktikum.bomoapp.ForegroundService
 import com.praktikum.bomoapp.R
 import com.praktikum.bomoapp.Singletons.GpsLocationListenerSingleton
@@ -93,9 +112,73 @@ fun Data() {
         item {
             CompassContent()
         }
+        item {
+            ChartContent()
+        }
 
 
     }
+}
+
+@Composable
+fun ChartContent() {
+    val maxRange = 10
+    val barData1 = BarData(Point(AccelerometerListenerSingleton.accelerometerX,0f), Color.Red,"accY",)
+    val barData2 = BarData(Point(AccelerometerListenerSingleton.accelerometerY,1f), Color.Blue,"accX",)
+    val barData3 = BarData(Point(AccelerometerListenerSingleton.accelerometerZ,2f), Color.Green,"accZ",)
+
+    var barData = mutableListOf<BarData>()
+    barData.add(barData1)
+    barData.add(barData2)
+    barData.add(barData3)
+
+    val xStepSize = 5
+
+    val xAxisData = AxisData.Builder()
+        .steps(xStepSize)
+        .bottomPadding(12.dp)
+        .endPadding(40.dp)
+        .labelData { index -> (index * (maxRange / xStepSize)).toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .bottomPadding(12.dp)
+        .steps(barData.size - 1)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .setDataCategoryOptions(
+            DataCategoryOptions(
+                isDataCategoryInYAxis = true,
+                isDataCategoryStartFromBottom = false
+            )
+        )
+        .startDrawPadding(18.dp)
+        .labelData { index -> barData[index].label }
+        .build()
+    val barChartData = BarChartData(
+        chartData = barData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        barStyle = BarStyle(
+            isGradientEnabled = false,
+            paddingBetweenBars = 20.dp,
+            barWidth = 35.dp,
+            selectionHighlightData = SelectionHighlightData(
+                highlightBarColor = Color.Red,
+                highlightTextBackgroundColor = Color.Green,
+                popUpLabel = { x, _ -> " Value : $x " },
+                barChartType = BarChartType.HORIZONTAL
+            ),
+        ),
+        showYAxis = true,
+        showXAxis = true,
+        horizontalExtraSpace = 20.dp,
+        barChartType = BarChartType.HORIZONTAL
+    )
+    BarChart(
+        modifier = Modifier.height(220.dp),
+        barChartData = barChartData
+    )
 }
 
 @Composable

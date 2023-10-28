@@ -51,6 +51,7 @@ android {
 
 dependencies {
 
+    implementation("co.yml:ycharts:2.1.0")
     implementation("androidx.browser:browser:1.5.0")
     implementation("com.karumi:dexter:6.2.2")
     implementation("androidx.navigation:navigation-compose:2.5.3")
