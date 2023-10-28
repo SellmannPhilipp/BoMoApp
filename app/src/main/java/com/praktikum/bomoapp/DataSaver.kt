@@ -15,6 +15,7 @@ class DataSaver : ViewModel() {
         val networkList = mutableListOf("")
         val accelerometerList = mutableListOf("")
         val gyroscopeList = mutableListOf("")
+        val compassList = mutableListOf("")
         val lock = Any()
 
         fun saveAllData(){
@@ -22,27 +23,28 @@ class DataSaver : ViewModel() {
             var networkListCopy: List<String>
             var accelerometerListCopy: List<String>
             var gyroscopeListCopy: List<String>
+            var compassListCopy: List<String>
             synchronized(lock) {
                 gpsListCopy = gpsList.toList()
                 networkListCopy = networkList.toList()
                 accelerometerListCopy = accelerometerList.toList()
                 gyroscopeListCopy =  gyroscopeList.toList()
+                compassListCopy =  compassList.toList()
                 gpsList.clear()
                 networkList.clear()
                 accelerometerList.clear()
                 gyroscopeList.clear()
+                compassList.clear()
             }
 
             //Dateispeicherung Lokal
             thread {
-                checkForFile("gps.txt")
-                checkForFile("network.txt")
-                checkForFile("acc.txt")
-                checkForFile("gyro.txt")
+                checkForFile()
                 writeFile("gps.txt",gpsListCopy)
                 writeFile("network.txt",networkListCopy)
                 writeFile("acc.txt",accelerometerListCopy)
                 writeFile("gyro.txt",gyroscopeListCopy)
+                writeFile("compass.txt",compassListCopy)
             }
 
             //Dateispeicherung Server
@@ -57,6 +59,7 @@ class DataSaver : ViewModel() {
                 sendToServer(mqttClient,"network",networkListCopy)
                 sendToServer(mqttClient,"acc",accelerometerListCopy)
                 sendToServer(mqttClient,"gyro",gyroscopeListCopy)
+                sendToServer(mqttClient,"compass",compassListCopy)
                 mqttClient.disconnect()
             }
         }
@@ -78,13 +81,34 @@ class DataSaver : ViewModel() {
             outputStream.close()
         }
 
-        private fun checkForFile(dateiName: String) {
+        private fun checkForFile() {
 
-            if (!File("/storage/emulated/0/Download/"+dateiName).exists()) {
-                val outputStream = FileOutputStream("/storage/emulated/0/Download/"+dateiName)
+            if (!File("/storage/emulated/0/Download/gps.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/gps.txt")
                 outputStream.write("Time,Latitude,Longitude\n".toByteArray())
                 outputStream.close()
             }
+            if (!File("/storage/emulated/0/Download/network.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/network.txt")
+                outputStream.write("Time,Latitude,Longitude\n".toByteArray())
+                outputStream.close()
+            }
+            if (!File("/storage/emulated/0/Download/acc.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/acc.txt")
+                outputStream.write("Time,accX,accY,accZ\n".toByteArray())
+                outputStream.close()
+            }
+            if (!File("/storage/emulated/0/Download/gyro.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/gyro.txt")
+                outputStream.write("Time,gyrX,gyrY,gyrZ\n".toByteArray())
+                outputStream.close()
+            }
+            if (!File("/storage/emulated/0/Download/compass.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/compass.txt")
+                outputStream.write("Time,orientation\n".toByteArray())
+                outputStream.close()
+            }
+
 
         }
     }

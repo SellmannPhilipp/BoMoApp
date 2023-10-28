@@ -1,11 +1,11 @@
 package com.praktikum.bomoapp.Singletons
 
+import AccelerometerListenerSingleton
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -84,6 +84,7 @@ object MagnetoSensorListenerSingleton {
                     azimuthInRadians = orientationAngles[0]
                     // Umrechnung in Grad und Bildung des gleitenden Mittelwerts
                     orientation =  movingAverage(Math.toDegrees(azimuthInRadians.toDouble()).toFloat())
+                    DataSaver.compassList.add(System.currentTimeMillis().toString() + "," + orientation + "\n")
 
                 }
 
