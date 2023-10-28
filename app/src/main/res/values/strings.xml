@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BoMoApp</string>
+    <string name="compass_content_description">compass_content_description</string>
 </resources>
