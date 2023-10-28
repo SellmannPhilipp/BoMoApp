@@ -65,6 +65,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation ("androidx.compose.runtime:runtime:1.0.0")
+    implementation("co.yml:ycharts:2.1.0")
     implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.5.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

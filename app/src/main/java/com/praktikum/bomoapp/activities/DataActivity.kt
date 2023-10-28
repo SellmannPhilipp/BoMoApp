@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,6 +33,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.LineType
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.praktikum.bomoapp.ForegroundService
 import com.praktikum.bomoapp.Singletons.GpsLocationListenerSingleton
 import com.praktikum.bomoapp.Singletons.GyroscopeSensorEventListenerSingleton
@@ -75,7 +88,7 @@ fun Data() {
             GridContent()
         }
         item {
-            //GraphContetn()
+            GraphContetn()
         }
     }
 }
@@ -136,75 +149,6 @@ fun SpinnerComponent() {
 
 @Composable
 fun GridContent() {
-    /*
-    val sensorManager: SensorManager = LocalContext.current.getSystemService(SENSOR_SERVICE) as SensorManager
-    var locationManager: LocationManager = LocalContext.current.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
-    val gyroscopeSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-    val accelerometerSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-
-    if (ActivityCompat.checkSelfPermission(
-            LocalContext.current,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            LocalContext.current,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        return
-    }
-    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, object :
-            LocationListener {
-            override fun onLocationChanged(location: Location) {
-                latitude = location.latitude
-                longitude = location.longitude
-            }
-
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {}
-        })
-
-
-    if (gyroscopeSensor != null) {
-        sensorManager.registerListener(
-            object : SensorEventListener {
-                override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
-                override fun onSensorChanged(event: SensorEvent?) {
-                    if (event != null) {
-                        gyroscopeX = event.values[0]
-                        gyroscopeY = event.values[1]
-                        gyroscopeZ = event.values[2]
-                        //Log.d("Gyroscope", "$gyroscopeX\n$gyroscopeY\n$gyroscopeZ")
-                    }
-                }
-            },
-            gyroscopeSensor,
-            SensorManager.SENSOR_DELAY_NORMAL
-        )
-    }
-
-    if (accelerometerSensor != null) {
-        sensorManager.registerListener(
-            object : SensorEventListener {
-                override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
-                override fun onSensorChanged(event: SensorEvent?) {
-                    if (event != null) {
-                        accX = event.values[0]
-                        accY = event.values[1]
-                        accZ = event.values[2]
-                        //Log.d("Gyroscope", "$gyroscopeX\n$gyroscopeY\n$gyroscopeZ")
-                    }
-                }
-            },
-            accelerometerSensor,
-            SensorManager.SENSOR_DELAY_NORMAL
-        )
-    }
-     */
 
     accelerometerX = AccelerometerListenerSingleton.accelerometerX
     accelerometerY = AccelerometerListenerSingleton.accelerometerY
@@ -355,7 +299,61 @@ fun GridContent() {
 
 @Composable
 fun GraphContetn() {
-    TODO("Not yet implemented")
+    val xsteps: Int = 20
+    val ysteps: Int = 5
+    val datapointsY by remember {
+        mutableStateOf(AccelerometerListenerSingleton.datapoints)
+    }
+    //val datapoints: List<Point> =
+    //    listOf(Point(1f, 10f), Point(2f, 20f), Point(3f, 30f), Point(4f, 40f), Point(5f, 50f))
+    //val datapoints: MutableList<Point> = mutableListOf(Point(1f, 10f), Point(2f, 20f), Point(3f, 30f), Point(4f, 40f), Point(5f, 50f))
+
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(100.dp)
+        .steps(xsteps)
+        .labelData {
+            i -> i.toString()
+        } .labelAndAxisLinePadding(15.dp) .build()
+
+    val yAxisData = AxisData.Builder() .steps(ysteps) .labelData {
+            i -> val yScale = 20 / ysteps
+            (i * yScale).toString()
+            }.build()
+    Log.d("Debug", AccelerometerListenerSingleton.datapoints.size.toString())
+
+    val lineChartData = remember {
+        LineChartData(
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    Line(
+                        dataPoints = AccelerometerListenerSingleton.datapoints, LineStyle(LineType.Straight()),
+                        IntersectionPoint(),
+                        SelectionHighlightPoint(),
+                        ShadowUnderLine(),
+                        SelectionHighlightPopUp()
+                    )
+                ),
+            ),
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            gridLines = GridLines(),
+            backgroundColor = Color.White
+        )
+    }
+
+    Row {
+        if(AccelerometerListenerSingleton.datapoints.isNotEmpty()) {
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(350.dp),
+                lineChartData = lineChartData
+            )
+        }
+    }
+    Row {
+
+    }
 }
 
 /*
@@ -534,3 +532,72 @@ override fun onStop() {
 }
 
  */
+/*
+   val sensorManager: SensorManager = LocalContext.current.getSystemService(SENSOR_SERVICE) as SensorManager
+   var locationManager: LocationManager = LocalContext.current.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+   val gyroscopeSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+   val accelerometerSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+
+   if (ActivityCompat.checkSelfPermission(
+           LocalContext.current,
+           android.Manifest.permission.ACCESS_FINE_LOCATION
+       ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+           LocalContext.current,
+           android.Manifest.permission.ACCESS_COARSE_LOCATION
+       ) != PackageManager.PERMISSION_GRANTED
+   ) {
+       return
+   }
+   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, object :
+           LocationListener {
+           override fun onLocationChanged(location: Location) {
+               latitude = location.latitude
+               longitude = location.longitude
+           }
+
+           override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+           override fun onProviderEnabled(provider: String) {}
+           override fun onProviderDisabled(provider: String) {}
+       })
+
+
+   if (gyroscopeSensor != null) {
+       sensorManager.registerListener(
+           object : SensorEventListener {
+               override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+               override fun onSensorChanged(event: SensorEvent?) {
+                   if (event != null) {
+                       gyroscopeX = event.values[0]
+                       gyroscopeY = event.values[1]
+                       gyroscopeZ = event.values[2]
+                       //Log.d("Gyroscope", "$gyroscopeX\n$gyroscopeY\n$gyroscopeZ")
+                   }
+               }
+           },
+           gyroscopeSensor,
+           SensorManager.SENSOR_DELAY_NORMAL
+       )
+   }
+
+   if (accelerometerSensor != null) {
+       sensorManager.registerListener(
+           object : SensorEventListener {
+               override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+               override fun onSensorChanged(event: SensorEvent?) {
+                   if (event != null) {
+                       accX = event.values[0]
+                       accY = event.values[1]
+                       accZ = event.values[2]
+                       //Log.d("Gyroscope", "$gyroscopeX\n$gyroscopeY\n$gyroscopeZ")
+                   }
+               }
+           },
+           accelerometerSensor,
+           SensorManager.SENSOR_DELAY_NORMAL
+       )
+   }
+    */
