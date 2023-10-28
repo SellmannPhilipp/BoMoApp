@@ -1,7 +1,6 @@
 package com.praktikum.bomoapp.activities
 
 import AccelerometerViewModel
-import GpsTrackingViewModel
 import GyroscopeViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.viewmodels.GpsTrackingViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 
 @Composable

@@ -75,7 +75,7 @@ fun Data() {
             GridContent()
         }
         item {
-            GraphContetn()
+            //GraphContetn()
         }
     }
 }
