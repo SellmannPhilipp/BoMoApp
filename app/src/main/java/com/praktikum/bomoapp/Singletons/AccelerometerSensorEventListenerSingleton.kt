@@ -15,6 +15,7 @@ object AccelerometerListenerSingleton {
     var accelerometerY by mutableStateOf(0f)
     var accelerometerZ by mutableStateOf(0f)
 
+
     fun getInstance(context: Context): SensorEventListener {
         if (instance == null) {
             instance = createSensorEventListener(context)

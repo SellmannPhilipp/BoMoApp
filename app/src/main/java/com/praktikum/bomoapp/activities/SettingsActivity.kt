@@ -3,6 +3,7 @@ package com.praktikum.bomoapp.activities
 import AccelerometerViewModel
 import GpsTrackingViewModel
 import GyroscopeViewModel
+import MagnetometerViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
 import android.hardware.SensorManager
@@ -42,6 +43,7 @@ fun Settings() {
     val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
     val accViewModel = AccelerometerViewModel(LocalContext.current)
     val gyrViewModel = GyroscopeViewModel(LocalContext.current)
+    val mgnViewModel = MagnetometerViewModel(LocalContext.current)
 
     TabRow(selectedTabIndex) {
         tabOptions.forEachIndexed { index, title ->
@@ -77,7 +79,7 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     Gyroscope(gyrViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Compass()
+                    Compass(mgnViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
@@ -156,9 +158,10 @@ fun Gyroscope(viewModel: GyroscopeViewModel) {
 }
 
 @Composable
-fun Compass() {
-    Button(onClick = {  }) {
-        Text(text = "Kompass")
+fun Compass(viewModel: MagnetometerViewModel) {
+    var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
+    Button(onClick = { viewModel.toggleMagnetometer((SamplingRateViewModel.samplingRate)) }) {
+        Text(text = "Kompass: $btnTextEnabled")
     }
 }
 
