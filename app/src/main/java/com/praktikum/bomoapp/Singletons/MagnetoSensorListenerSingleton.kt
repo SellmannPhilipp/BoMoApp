@@ -84,7 +84,7 @@ object MagnetoSensorListenerSingleton {
                     azimuthInRadians = orientationAngles[0]
                     // Umrechnung in Grad und Bildung des gleitenden Mittelwerts
                     orientation =  movingAverage(Math.toDegrees(azimuthInRadians.toDouble()).toFloat())
-                    DataSaver.compassList.add(System.currentTimeMillis().toString() + "," + orientation + "\n")
+                    DataSaver.compassList.add(System.currentTimeMillis().toString() + "," + orientation + "," + magnetometerReading[0] + "," + magnetometerReading[1] + "," + magnetometerReading[2] + "\n")
 
                 }
 

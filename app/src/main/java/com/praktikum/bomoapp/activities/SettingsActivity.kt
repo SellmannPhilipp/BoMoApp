@@ -111,7 +111,8 @@ fun OpenBrowser() {
 
 @Composable
 fun SaveDataButton() {
-    Button(onClick = { DataSaver.saveAllData()}) {
+    val context = LocalContext.current
+    Button(onClick = { DataSaver.saveAllData(context)}) {
         Text(text = "Daten auf Server Speichern")
     }
 }

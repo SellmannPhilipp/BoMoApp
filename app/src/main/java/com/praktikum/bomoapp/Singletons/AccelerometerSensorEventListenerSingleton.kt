@@ -1,8 +1,8 @@
+
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -33,7 +33,7 @@ object AccelerometerListenerSingleton {
                 accelerometerX = event.values[0]
                 accelerometerY = event.values[1]
                 accelerometerZ = event.values[2]
-                Log.d("Accelerometer", "${event.values[0]}\n${event.values[1]}\n${event.values[2]}")
+                //Log.d("Accelerometer", "${event.values[0]}\n${event.values[1]}\n${event.values[2]}")
                 DataSaver.accelerometerList.add(System.currentTimeMillis().toString() + "," + event.values[0] + "," + event.values[1] + "," + event.values[2] + "\n")
             }
         }
