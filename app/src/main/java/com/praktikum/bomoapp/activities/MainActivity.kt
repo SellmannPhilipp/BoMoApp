@@ -2,13 +2,8 @@ package com.praktikum.bomoapp.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-<<<<<<< HEAD
-import android.content.Intent
-=======
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
->>>>>>> 7b6e318854e6be16b8e359874d2e838f1008bc16
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -54,10 +49,7 @@ data class BottomNavigationItem(
 class MainActivity : ComponentActivity() {
     private var isBound = false
     var serviceIntent: Intent? = null
-<<<<<<< HEAD
-=======
     private lateinit var sharedPreferences: SharedPreferences
->>>>>>> 7b6e318854e6be16b8e359874d2e838f1008bc16
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
