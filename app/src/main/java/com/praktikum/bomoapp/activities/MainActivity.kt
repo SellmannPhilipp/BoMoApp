@@ -2,7 +2,13 @@ package com.praktikum.bomoapp.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+<<<<<<< HEAD
 import android.content.Intent
+=======
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+>>>>>>> 7b6e318854e6be16b8e359874d2e838f1008bc16
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -48,6 +54,10 @@ data class BottomNavigationItem(
 class MainActivity : ComponentActivity() {
     private var isBound = false
     var serviceIntent: Intent? = null
+<<<<<<< HEAD
+=======
+    private lateinit var sharedPreferences: SharedPreferences
+>>>>>>> 7b6e318854e6be16b8e359874d2e838f1008bc16
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
@@ -93,12 +103,14 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(item.route)
                                 },
                                 label = {
-                                        Text(text = item.title)
+                                    Text(text = item.title)
                                 },
                                 icon = {
                                     BadgedBox(badge = {}) {
-                                        Icon(imageVector = if(index == selectedItemIndex) {
-                                            item.selectedIcon } else item.unselectedIcon,
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex) {
+                                                item.selectedIcon
+                                            } else item.unselectedIcon,
                                             contentDescription = item.title
                                         )
                                     }
@@ -142,10 +154,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                override fun onPermissionRationaleShouldBeShown(permissions: List<PermissionRequest?>?, token: PermissionToken?) {
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest?>?,
+                    token: PermissionToken?
+                ) {
                     token?.continuePermissionRequest()
                 }
-            }).withErrorListener{
+            }).withErrorListener {
                 Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
             }.check()
     }

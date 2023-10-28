@@ -1,9 +1,10 @@
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationListener
 import android.location.LocationManager
-import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.*
+import androidx.lifecycle.ViewModel
 import com.praktikum.bomoapp.Singletons.GpsLocationListenerSingleton
 
 
