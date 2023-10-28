@@ -1,20 +1,10 @@
 package com.praktikum.bomoapp.activities
 
+import AccelerometerListenerSingleton
 import android.content.ComponentName
-import android.content.Context
-import android.content.Context.SENSOR_SERVICE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
@@ -42,8 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import com.praktikum.bomoapp.ForegroundService
+import com.praktikum.bomoapp.Singletons.GpsLocationListenerSingleton
+import com.praktikum.bomoapp.Singletons.GyroscopeSensorEventListenerSingleton
 
 val context = LocalContext
 var myForegroundService: ForegroundService? = null
@@ -51,22 +42,14 @@ private var isBound = false
 var serviceIntent: Intent? = null
 private lateinit var sharedPreferences: SharedPreferences
 var gridTexts = List(6) { MutableList(4) { "" } }
-var gridGX: String  by mutableStateOf("0")
-var gridGY: String by mutableStateOf("0")
-var gridGZ: String by mutableStateOf("0")
-var gridAX: String  by mutableStateOf("0")
-var gridAY: String by mutableStateOf("0")
-var gridAZ: String by mutableStateOf("0")
-var gridLat: String by mutableStateOf("0")
-var gridLong: String by mutableStateOf("0")
 
 var gyroscopeX by mutableStateOf(0f)
 var gyroscopeY by mutableStateOf(0f)
 var gyroscopeZ by mutableStateOf(0f)
 
-var accX by mutableStateOf(0f)
-var accY by mutableStateOf(0f)
-var accZ by mutableStateOf(0f)
+var accelerometerX by mutableStateOf(0f)
+var accelerometerY by mutableStateOf(0f)
+var accelerometerZ by mutableStateOf(0f)
 
 var latitude by mutableStateOf(0.0)
 var longitude by mutableStateOf(0.0)
@@ -86,15 +69,15 @@ fun Data() {
         .padding(vertical = 50.dp),
         state = scrollState){
         item{
-            SpinnerComponent()
+            //SpinnerComponent()
         }
         item {
             GridContent()
         }
+        item {
+            GraphContetn()
+        }
     }
-
-    //gridLong = gpsViewModel.latitude.toString();
-
 }
 
 @Composable
@@ -153,6 +136,7 @@ fun SpinnerComponent() {
 
 @Composable
 fun GridContent() {
+    /*
     val sensorManager: SensorManager = LocalContext.current.getSystemService(SENSOR_SERVICE) as SensorManager
     var locationManager: LocationManager = LocalContext.current.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -220,45 +204,19 @@ fun GridContent() {
             SensorManager.SENSOR_DELAY_NORMAL
         )
     }
-/*
-    val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
-    val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
-    val accViewModel = AccelerometerViewModel(LocalContext.current)
-    val gyrViewModel = GyroscopeViewModel(LocalContext.current)
+     */
 
-    accViewModel.toggleAccelerometer()
-    //networkViewModel.start()
-    //gpsViewModel.start()
-    //Log.d("Debug", accViewModel.accelerometerOn.toString())
-    //accViewModel.toggleAccelerometer()
-    //Log.d("Debug", accViewModel.accelerometerOn.toString())
-    //gyrViewModel.toggleGyroscope()
+    accelerometerX = AccelerometerListenerSingleton.accelerometerX
+    accelerometerY = AccelerometerListenerSingleton.accelerometerY
+    accelerometerZ = AccelerometerListenerSingleton.accelerometerZ
 
-    Log.d("Debug", accViewModel.getAccData())
-    //Log.d("Debug", "-------------------" + accViewModel.accX.toString() + " " + accViewModel.accY.toString() + " " + accViewModel.accZ.toString())
-    //Log.d("Debug", "-------------------" + gyrViewModel.gyrX.toString() + " " + gyrViewModel.gyrY.toString() + " " + gyrViewModel.gyrZ.toString())
-    //Log.d("Debug", "-------------------" + gpsViewModel.latitude.toString() + " " + gpsViewModel.longitude.toString())
-    //Log.d("Debug", "-------------------" + networkViewModel.latitude.toString() + " " + networkViewModel.longitude.toString())
-    //gridLat = gpsList.get(gpsList.size)
-*/
-   // gridTexts = gridTexts.toMutableList().also { it[4][1] = gpsViewModel.latitude.toString()}
-/*
-    val gpsList = mutableListOf("")
-    val networkList = mutableListOf("")
-    val accelerometerList = mutableListOf("")
-    val gyroscopeList = mutableListOf("")
-    var gpsListCopy: List<String>
-    var networkListCopy: List<String>
-    var accelerometerListCopy: List<String>
-    var gyroscopeListCopy: List<String>
+    gyroscopeX = GyroscopeSensorEventListenerSingleton.gyroscopeX
+    gyroscopeY = GyroscopeSensorEventListenerSingleton.gyroscopeY
+    gyroscopeZ = GyroscopeSensorEventListenerSingleton.gyroscopeZ
 
-    gpsListCopy = gpsList.toList()
-    networkListCopy = networkList.toList()
-    accelerometerListCopy = accelerometerList.toList()
-    gyroscopeListCopy =  gyroscopeList.toList()
+    latitude = GpsLocationListenerSingleton.latitude
+    longitude = GpsLocationListenerSingleton.longitude
 
-    Log.d("Debug", (gyroscopeListCopy.get(gyroscopeListCopy.lastIndex)) + "-----------------------------------")
-*/
     gridTexts = gridTexts.toMutableList().also { it[0][0] = "Gyroscope" }
     gridTexts = gridTexts.toMutableList().also { it[0][2] = "Acc" }
     gridTexts = gridTexts.toMutableList().also { it[1][0] = "X:" }
@@ -328,7 +286,7 @@ fun GridContent() {
                                             )
                                         if (j == 3)
                                             Text(
-                                                text = accX.toString(),
+                                                text = accelerometerX.toString(),
                                                 //text = textTest,
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.align(Alignment.Center)
@@ -345,7 +303,7 @@ fun GridContent() {
                                             )
                                         if (j == 3)
                                             Text(
-                                                text = accY.toString(),
+                                                text = accelerometerY.toString(),
                                                 //text = textTest,
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.align(Alignment.Center)
@@ -362,7 +320,7 @@ fun GridContent() {
                                             )
                                         if (j == 3)
                                             Text(
-                                                text = accZ.toString(),
+                                                text = accelerometerZ.toString(),
                                                 //text = textTest,
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.align(Alignment.Center)
@@ -394,6 +352,12 @@ fun GridContent() {
         }
     }
 }
+
+@Composable
+fun GraphContetn() {
+    TODO("Not yet implemented")
+}
+
 /*
 @Composable
 fun FirstTabContent() {

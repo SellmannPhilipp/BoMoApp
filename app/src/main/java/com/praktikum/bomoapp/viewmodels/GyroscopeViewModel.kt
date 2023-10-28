@@ -1,9 +1,11 @@
+
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.praktikum.bomoapp.Singletons.GyroscopeSensorEventListenerSingleton
@@ -28,7 +30,7 @@ class GyroscopeViewModel(context: Context) : ViewModel() {
         viewModelScope.launch {
             sensorManager.registerListener(
                 sensorEventListener,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 SensorManager.SENSOR_DELAY_NORMAL
             )
         }
