@@ -64,6 +64,8 @@ fun Settings() {
                     NetworkTracking(networkViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ShowMarkerOnMap()
                 }
             }
         }
@@ -162,6 +164,13 @@ fun Compass(viewModel: MagnetometerViewModel) {
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
     Button(onClick = { viewModel.toggleMagnetometer((SamplingRateViewModel.samplingRate)) }) {
         Text(text = "Kompass: $btnTextEnabled")
+    }
+}
+
+@Composable
+fun ShowMarkerOnMap() {
+    Button(onClick = { /**/ }) {
+        Text(text = "Aktuelle Position")
     }
 }
 
