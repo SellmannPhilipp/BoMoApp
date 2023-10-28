@@ -1,64 +1,76 @@
+package com.praktikum.bomoapp.viewmodels
+
 import android.content.Context
 import android.hardware.Sensor
+import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import androidx.compose.runtime.*
+import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.praktikum.bomoapp.DataSaver
 import kotlinx.coroutines.launch
 
 class AccelerometerViewModel(context: Context) : ViewModel() {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private var sensorEventListener: SensorEventListener? = null
-    private var ctx = context
 
-    var tracking by mutableStateOf(false)
+    var accelerometerOn by mutableStateOf(false)
+
+    var accX by mutableStateOf(0f)
+        private set
+
+    var accY by mutableStateOf(0f)
+        private set
+
+    var accZ by mutableStateOf(0f)
+        private set
 
     init {
-        val sharedPreferences = context.getSharedPreferences("Accelerometer", Context.MODE_PRIVATE)
+        sensorEventListener = object : SensorEventListener {
+            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                // Hier kann ggf. die Genauigkeit des Sensors behandelt werden
+            }
 
-        // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
-        tracking = sharedPreferences.getBoolean("tracking", false)
-    }
-
-    fun start(samplingRate: Int) {
-        this.sensorEventListener  = AccelerometerListenerSingleton.getInstance(ctx)
-        viewModelScope.launch {
-            sensorManager.registerListener(
-                sensorEventListener,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                samplingRate,
-            )
+            override fun onSensorChanged(event: SensorEvent) {
+                if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                    accX = event.values[0]
+                    accY = event.values[1]
+                    accZ = event.values[2]
+                    //Log.d("Accelerometer", "$accX\n$accY\n$accZ")
+                    DataSaver.accelerometerList.add(System.currentTimeMillis().toString()+","+accX+","+accY+","+accZ+"\n")
+                }
+            }
         }
     }
 
-    fun stop() {
-        this.sensorEventListener  = AccelerometerListenerSingleton.getInstance(ctx)
-        sensorEventListener?.let {
-            sensorManager.unregisterListener(it)
-        }
-    }
-
-    fun toggleAccelerometer(samplingRate: Int) {
-        tracking = !tracking
-
-        // SharedPreferences-Instanz abrufen
-        val sharedPreferences = ctx.getSharedPreferences("Accelerometer", Context.MODE_PRIVATE)
-
-        // Editor zum Bearbeiten der SharedPreferences
-        val editor = sharedPreferences.edit()
-
-        // Den Wert von 'tracking' speichern
-        editor.putBoolean("tracking", tracking)
-
-        // Änderungen speichern
-        editor.apply()
-
-        if (tracking) {
-            start(samplingRate)
+    fun toggleAccelerometer() {
+        accelerometerOn = !accelerometerOn
+        Log.d("Debug", "--------------------------------- ACC toggle")
+        if (accelerometerOn) {
+            viewModelScope.launch {
+                sensorManager.registerListener(
+                    sensorEventListener,
+                    sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+            }
         } else {
-            stop()
+            sensorManager.unregisterListener(sensorEventListener)
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        accelerometerOn = false
+        sensorManager.unregisterListener(sensorEventListener)
+    }
+
+    fun getAccData(): String{
+        return "$accX $accY $accZ";
+    }
+
 }
