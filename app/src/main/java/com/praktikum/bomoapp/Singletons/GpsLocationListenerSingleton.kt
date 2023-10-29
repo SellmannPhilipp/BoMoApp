@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 
 object GpsLocationListenerSingleton {
     private var instance: LocationListener? = null
@@ -28,6 +29,7 @@ object GpsLocationListenerSingleton {
                 longitude = location.longitude
                 Log.d("GPS-Tracking", "${location.latitude} ${location.longitude}")
                 DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+location.latitude+","+location.longitude+"\n")
+                LastLocationViewModel.locationList.add("${location.latitude}" + "," + "${location.longitude}" + "\n")
             }
         }
     }

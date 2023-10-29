@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import co.yml.charts.common.extensions.isNotNull
+import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
@@ -19,19 +21,18 @@ fun OsmdroidMapView() {
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             val mapView = MapView(context)
-
-            // Fügen Sie hier die Konfigurationseinstellungen hinzu
             Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
             Configuration.getInstance().userAgentValue = "BoMoApp"
-
-            setMapCamera(mapView, 51.4818, 7.2162, 18)
+            setMapCamera(mapView, 51.4818, 7.2162, 20)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
             mapView.setMultiTouchControls(true)
+            if(LastLocationViewModel.geoPoint.isNotNull()) {
+                LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
+            }
             mapView
         }
     )
 }
-
 
 fun setMapCamera(view: MapView, latitude: Double, longitude: Double, zoomLevel: Int) {
     val mapView = view
@@ -43,9 +44,8 @@ fun setMapCamera(view: MapView, latitude: Double, longitude: Double, zoomLevel: 
     mapController.setZoom(zoomLevel)
 }
 
-fun addMarkerToMap(view: MapView, latitude: Double, longitude: Double, name: String) {
+fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, name: String) {
     val mapView = view
-    val geoPoint = GeoPoint(latitude, longitude)
 
     val marker = Marker(mapView)
     marker.position = geoPoint

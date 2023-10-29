@@ -58,7 +58,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             getPermission()
-            // Initialisieren Sie die SharedPreferences
             serviceIntent = Intent(LocalContext.current, ForegroundService::class.java)
 
             val items = listOf(
@@ -124,8 +123,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
-            //AppContent(intentMap, intentSettings)
         }
     }
 

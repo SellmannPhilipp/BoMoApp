@@ -32,11 +32,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 
 @Composable
 fun Settings() {
-    val tabOptions = listOf("Positionierung", "Sensorik", "Speichern") // Füge hier die gewünschten Tab-Optionen hinzu
+    val tabOptions = listOf("Position", "Sensorik", "Speichern") // Füge hier die gewünschten Tab-Optionen hinzu
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
@@ -65,7 +66,7 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    ShowMarkerOnMap()
+                    Marker()
                 }
             }
         }
@@ -169,9 +170,15 @@ fun Compass(viewModel: MagnetometerViewModel) {
 }
 
 @Composable
-fun ShowMarkerOnMap() {
-    Button(onClick = { /**/ }) {
-        Text(text = "Aktuelle Position")
+fun Marker() {
+    Button(
+        onClick = {
+            if(LastLocationViewModel.locationList.size > 1){
+                LastLocationViewModel.getLastLocation()
+            }
+         }
+    ) {
+        Text(text = "Markiere letzte bekannte Position")
     }
 }
 
