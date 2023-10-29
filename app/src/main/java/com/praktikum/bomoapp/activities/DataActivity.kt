@@ -104,8 +104,9 @@ fun Data() {
             GridContent()
         }
         item {
-            //GraphContetn()
+            GraphContent()
         }
+
         item {
             CompassGridContent()
         }
@@ -115,6 +116,8 @@ fun Data() {
         item {
             ChartContent()
         }
+
+
 
 
     }
@@ -451,7 +454,7 @@ fun GridContent() {
                                             )
                                         if (j == 3)
                                             Text(
-                                                text = accelerometerX.toString(),
+                                                text =  accelerometerX.toString(),
                                                 //text = textTest,
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.align(Alignment.Center)
@@ -520,8 +523,79 @@ fun GridContent() {
 }
 
 @Composable
-fun GraphContetn() {
-    TODO("Not yet implemented")
+fun GraphContent() {
+    accelerometerX = AccelerometerListenerSingleton.accelerometerX
+
+    val pointsData: List<Point> =
+        listOf(Point(0f, AccelerometerListenerSingleton.test[0]),
+            Point(1f, AccelerometerListenerSingleton.test[1]),
+            Point(2f, AccelerometerListenerSingleton.test[2]),
+            Point(3f, AccelerometerListenerSingleton.test[3]),
+            Point(4f, AccelerometerListenerSingleton.test[4]),
+            Point(5f, AccelerometerListenerSingleton.test[5]),
+            Point(6f, AccelerometerListenerSingleton.test[6]),
+            Point(7f, AccelerometerListenerSingleton.test[7]),
+            Point(8f, AccelerometerListenerSingleton.test[8]),
+            Point(9f, AccelerometerListenerSingleton.test[9]))
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(100.dp)
+        .backgroundColor(Color.Blue)
+        .steps(pointsData.size - 1)
+        .labelData { i -> i.toString() }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .steps(10)
+        .backgroundColor(Color.Red)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i ->
+            val yMin = -10
+            val yMax = 10
+            val yScale = (yMax - yMin)/10
+            (i * yScale + yMin).toString()
+        }.build()
+
+    val lineChartData = LineChartData(
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(),
+                    IntersectionPoint(),
+                    SelectionHighlightPoint(),
+                    ShadowUnderLine(),
+                    SelectionHighlightPopUp()
+                )
+            ),
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines(),
+        backgroundColor = Color.White
+    )
+    LineChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        lineChartData = lineChartData
+    )
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+    Text(
+        text =  AccelerometerListenerSingleton.test[0].toString() + ", " +
+                AccelerometerListenerSingleton.test[1].toString() + ", " +
+                AccelerometerListenerSingleton.test[2].toString() + ", " +
+                AccelerometerListenerSingleton.test[3].toString() + ", " +
+                AccelerometerListenerSingleton.test[4].toString() + ", " +
+                AccelerometerListenerSingleton.test[5].toString() + ", " +
+                AccelerometerListenerSingleton.test[6].toString() + ", " +
+                AccelerometerListenerSingleton.test[7].toString() + ", " +
+                AccelerometerListenerSingleton.test[8].toString() + ", " , //accelerometerX.toString(),//accelerometerX.toString(),
+        //text = textTest,
+        textAlign = TextAlign.Center,
+        )
+    }
 }
 
 /*

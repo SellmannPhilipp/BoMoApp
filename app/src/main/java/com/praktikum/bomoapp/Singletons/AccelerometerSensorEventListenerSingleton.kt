@@ -8,8 +8,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.praktikum.bomoapp.DataSaver
 
+
+var accXHistory = FloatArray(10)
+fun createHistory(newValue: Float): MutableList<Float> {
+
+
+    for (i in 0 until (accXHistory.size - 1)) {
+        accXHistory[i] = accXHistory[i + 1]
+    }
+    accXHistory[accXHistory.size - 1] = newValue
+
+    var temp = accXHistory.toList()
+    return temp.toMutableList()
+}
+
+
 object AccelerometerListenerSingleton {
     private var instance: SensorEventListener? = null
+
+     var test = mutableListOf<Float>();
 
     var accelerometerX by mutableStateOf(0f)
     var accelerometerY by mutableStateOf(0f)
@@ -31,6 +48,7 @@ object AccelerometerListenerSingleton {
 
             override fun onSensorChanged(event: SensorEvent) {
                 accelerometerX = event.values[0]
+                test = createHistory(accelerometerX)
                 accelerometerY = event.values[1]
                 accelerometerZ = event.values[2]
                 Log.d("Accelerometer", "${event.values[0]}\n${event.values[1]}\n${event.values[2]}")
