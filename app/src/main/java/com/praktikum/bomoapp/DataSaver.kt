@@ -1,8 +1,6 @@
 package com.praktikum.bomoapp
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -20,9 +18,6 @@ class DataSaver : ViewModel() {
         val accelerometerList = mutableListOf("")
         val gyroscopeList = mutableListOf("")
         val compassList = mutableListOf("")
-        val handler = Handler(Looper.getMainLooper())
-        var anzahlElemente = 0
-        var anzahlGeschafft = 0
         val lock = Any()
 
         fun saveAllData(context: Context){
@@ -43,8 +38,10 @@ class DataSaver : ViewModel() {
                 gyroscopeList.clear()
                 compassList.clear()
             }
-            anzahlElemente = gpsListCopy.size + networkListCopy.size + accelerometerListCopy.size + gyroscopeListCopy.size + compassListCopy.size
-            anzahlGeschafft = 0
+            val anzahlElemente = gpsListCopy.size + networkListCopy.size + accelerometerListCopy.size + gyroscopeListCopy.size + compassListCopy.size
+            val toast = Toast(context)
+            toast.setText("$anzahlElemente Daten werden gespeichert")
+            toast.show()
             //Dateispeicherung Lokal
             thread {
                 checkForFile()
@@ -54,17 +51,6 @@ class DataSaver : ViewModel() {
                 writeFile("gyro.txt",gyroscopeListCopy)
                 writeFile("compass.txt",compassListCopy)
             }
-
-            val toast = Toast(context)
-            toast.setText("$anzahlElemente Daten werden gespeichert")
-            toast.show()
-            val myrunnable = object : Runnable {
-                override fun run() {
-                    showToast(toast)
-                    handler.postDelayed(this,2000)
-                }
-            }
-            handler.post(myrunnable)
 
             //Dateispeicherung Server
             thread {
@@ -80,27 +66,32 @@ class DataSaver : ViewModel() {
                 sendToServer(mqttClient,"gyro",gyroscopeListCopy)
                 sendToServer(mqttClient,"compass",compassListCopy)
                 mqttClient.disconnect()
-                handler.removeCallbacks(myrunnable)
+                Thread.sleep(2_000)
                 toast.cancel()
                 toast.setText("Fertig")
                 toast.show()
             }
         }
 
-        private fun showToast(toast:Toast){
-            toast.setText("$anzahlGeschafft/$anzahlElemente Elemente")
-            toast.show()
-        }
-
         private fun sendToServer(mqttClient: MqttClient, topic: String, list: List<String>) {
-            val iterator = list.iterator()
-            while (iterator.hasNext()) {
-                val element = iterator.next()
-                val message = MqttMessage()
-                message.payload = element.toByteArray()
-                //Log.d("SendServer", element)
-                mqttClient.publish("lokalisierung/"+topic, message)
-                anzahlGeschafft++
+            val message = MqttMessage()
+            //Aufteilen der Liste falls zu groß
+            if (list.size > 30000) {
+                var listToSend = list.slice(0..29999)
+                var restList = list.slice(30000..(list.size-1))
+                message.payload = listToSend.joinToString("").toByteArray()
+                mqttClient.publish("lokalisierung/" + topic, message)
+                while (restList.size>30000) {
+                    listToSend = restList.slice(0..29999)
+                    restList = restList.slice(30000..(restList.size-1))
+                    message.payload = listToSend.joinToString("").toByteArray()
+                    mqttClient.publish("lokalisierung/" + topic, message)
+                }
+                message.payload = restList.joinToString("").toByteArray()
+                mqttClient.publish("lokalisierung/" + topic, message)
+            } else {
+                message.payload = list.joinToString("").toByteArray()
+                mqttClient.publish("lokalisierung/" + topic, message)
             }
 
         }
