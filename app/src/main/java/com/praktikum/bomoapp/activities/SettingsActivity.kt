@@ -6,7 +6,9 @@ import GyroscopeViewModel
 import MagnetometerViewModel
 import NetworkTrackingViewModel
 import android.annotation.SuppressLint
+import android.content.Context
 import android.hardware.SensorManager
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -82,7 +84,7 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     Gyroscope(gyrViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Compass(mgnViewModel)
+                    Compass(mgnViewModel, accViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
@@ -162,9 +164,22 @@ fun Gyroscope(viewModel: GyroscopeViewModel) {
 }
 
 @Composable
-fun Compass(viewModel: MagnetometerViewModel) {
+fun Compass(viewModel: MagnetometerViewModel, acceleromter: AccelerometerViewModel) {
+    var context: Context = LocalContext.current
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
-    Button(onClick = { viewModel.toggleMagnetometer((SamplingRateViewModel.samplingRate)) }) {
+    Button(
+        onClick = {
+            if(!viewModel.tracking) {
+                if(acceleromter.tracking) {
+                    viewModel.toggleMagnetometer((SamplingRateViewModel.samplingRate))
+                } else {
+                    Toast.makeText(context, "Beschleunigungssensor muss aktiviert werden", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                viewModel.toggleMagnetometer((SamplingRateViewModel.samplingRate))
+            }
+        }
+    ) {
         Text(text = "Kompass: $btnTextEnabled")
     }
 }
