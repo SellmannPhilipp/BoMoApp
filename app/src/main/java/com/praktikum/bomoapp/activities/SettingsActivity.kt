@@ -80,7 +80,7 @@ fun Settings() {
                 Column {
                     Menu()
                     Spacer(modifier = Modifier.height(20.dp))
-                    Accelerometer(accViewModel)
+                    Accelerometer(accViewModel, mgnViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     Gyroscope(gyrViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -146,10 +146,23 @@ fun GpsTracking(viewModel: GpsTrackingViewModel) {
 }
 
 @Composable
-fun Accelerometer(viewModel: AccelerometerViewModel) {
+fun Accelerometer(viewModel: AccelerometerViewModel, magnetometer: MagnetometerViewModel) {
+    var context: Context = LocalContext.current
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
-    Button(onClick = { viewModel.toggleAccelerometer(SamplingRateViewModel.samplingRate) }) {
+    Button(
+        onClick = {
+            if(viewModel.tracking) {
+                if(magnetometer.tracking) {
+                    Toast.makeText(context, "Kompass muss zuerst deaktiviert werden", Toast.LENGTH_SHORT).show()
+                } else {
+                    viewModel.toggleAccelerometer(SamplingRateViewModel.samplingRate)
+                }
+            } else {
+                viewModel.toggleAccelerometer(SamplingRateViewModel.samplingRate)
+            }
+        }
+    ) {
         Text(text = "Beschleunigungssensor: $btnTextEnabled")
     }
 }
