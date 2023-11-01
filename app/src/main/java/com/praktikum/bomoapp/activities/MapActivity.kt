@@ -23,7 +23,7 @@ fun OsmdroidMapView() {
             val mapView = MapView(context)
             Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
             Configuration.getInstance().userAgentValue = "BoMoApp"
-            setMapCamera(mapView, 51.4818, 7.2162, 20)
+            setMapCamera(mapView, GeoPoint(51.4818, 7.2162), 20)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
             mapView.setMultiTouchControls(true)
             if(LastLocationViewModel.geoPoint.isNotNull()) {
@@ -34,13 +34,10 @@ fun OsmdroidMapView() {
     )
 }
 
-fun setMapCamera(view: MapView, latitude: Double, longitude: Double, zoomLevel: Int) {
+fun setMapCamera(view: MapView, geoPoint: GeoPoint, zoomLevel: Int) {
     val mapView = view
     val mapController = mapView.controller
-    val targetLatitude = latitude
-    val targetLongitude = longitude
-    val targetZoomLevel = zoomLevel
-    mapController.setCenter(GeoPoint(targetLatitude, targetLongitude))
+    mapController.setCenter(geoPoint)
     mapController.setZoom(zoomLevel)
 }
 
