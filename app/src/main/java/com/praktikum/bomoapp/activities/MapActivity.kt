@@ -13,6 +13,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 
 @Composable
 fun OsmdroidMapView() {
@@ -29,6 +30,15 @@ fun OsmdroidMapView() {
             if(LastLocationViewModel.geoPoint.isNotNull()) {
                 LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
             }
+
+            val polylinePoints = listOf(
+                GeoPoint(51.48122, 7.22009),
+                GeoPoint(51.48435, 7.23187),
+                GeoPoint(51.49931, 7.19633),
+            )
+
+            addPolylineToMap(mapView, polylinePoints)
+
             mapView
         }
     )
@@ -50,6 +60,27 @@ fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, name: String) {
     marker.title = name
 
     mapView.overlays.add(marker)
+
+    mapView.invalidate()
+}
+
+fun addPolylineToMap(view: MapView, polylinePoints: List<GeoPoint>) {
+    val mapView = view
+
+    val polyline = Polyline()
+    polyline.setPoints(polylinePoints)
+    polyline.color = 0x990000FF.toInt() // Farbe der Linie
+    polyline.width = 5f // Breite der Linie
+
+    mapView.overlayManager.add(polyline)
+
+    // Marker für jeden GeoPoint hinzufügen
+    for (point in polylinePoints) {
+        val marker = Marker(mapView)
+        marker.position = point
+        marker.title = "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
+        mapView.overlays.add(marker)
+    }
 
     mapView.invalidate()
 }
