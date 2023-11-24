@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import co.yml.charts.common.extensions.isNotNull
+import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -31,13 +32,24 @@ fun OsmdroidMapView() {
                 LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
             }
 
-            val polylinePoints = listOf(
+            //Route 1
+            val polylinePointsOne = listOf(
                 GeoPoint(51.48122, 7.22009),
                 GeoPoint(51.48435, 7.23187),
                 GeoPoint(51.49931, 7.19633),
             )
 
-            addPolylineToMap(mapView, polylinePoints)
+            //Route 2
+            val polylinePointsTwo = listOf(
+                GeoPoint(51.48122, 7.22009),
+                GeoPoint(51.48435, 7.23187),
+            )
+
+            if(PathController.getPathToShow() == 1) {
+                pathOne(mapView, polylinePointsOne)
+            } else if(PathController.getPathToShow() == 2) {
+                pathTwo(mapView, polylinePointsTwo)
+            }
 
             mapView
         }
@@ -64,7 +76,28 @@ fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, name: String) {
     mapView.invalidate()
 }
 
-fun addPolylineToMap(view: MapView, polylinePoints: List<GeoPoint>) {
+fun pathOne(view: MapView, polylinePoints: List<GeoPoint>) {
+    val mapView = view
+
+    val polyline = Polyline()
+    polyline.setPoints(polylinePoints)
+    polyline.color = 0x990000FF.toInt() // Farbe der Linie
+    polyline.width = 5f // Breite der Linie
+
+    mapView.overlayManager.add(polyline)
+
+    // Marker für jeden GeoPoint hinzufügen
+    for (point in polylinePoints) {
+        val marker = Marker(mapView)
+        marker.position = point
+        marker.title = "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
+        mapView.overlays.add(marker)
+    }
+
+    mapView.invalidate()
+}
+
+fun pathTwo(view: MapView, polylinePoints: List<GeoPoint>) {
     val mapView = view
 
     val polyline = Polyline()
