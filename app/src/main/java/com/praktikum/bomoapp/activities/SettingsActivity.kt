@@ -64,8 +64,8 @@ fun Settings() {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
-                    NetworkTracking(networkViewModel)
-                    Spacer(modifier = Modifier.height(20.dp))
+                    //NetworkTracking(networkViewModel)
+                    //Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     Marker()
@@ -78,7 +78,7 @@ fun Settings() {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
-                    Menu()
+                    MenuSamplingrate()
                     Spacer(modifier = Modifier.height(20.dp))
                     Accelerometer(accViewModel, mgnViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -121,7 +121,7 @@ fun SaveDataButton() {
 }
 
 
-
+/*
 //Function to track location by network provider
 @SuppressLint("MissingPermission")
 @Composable
@@ -133,7 +133,7 @@ fun NetworkTracking(viewModel: NetworkTrackingViewModel) {
         Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
-}
+} */
 
 @Composable
 fun GpsTracking(viewModel: GpsTrackingViewModel) {
@@ -212,7 +212,7 @@ fun Marker() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Menu() {
+fun MenuSamplingrate() {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("Samplingrate") }
 
