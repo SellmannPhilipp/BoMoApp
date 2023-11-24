@@ -76,6 +76,8 @@ fun Settings() {
                     //Marker()
                     //Spacer(modifier = Modifier.height(20.dp))
                     Measurement(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    AddMeasuringPoint(measurementViewModel)
                 }
             }
         }
@@ -342,5 +344,22 @@ fun Measurement(viewModel: MeasurementViewModel) {
         }
     ) {
         Text(text = "Messung: $btnTextEnabled")
+    }
+}
+
+@Composable
+fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    Button(
+        onClick = {
+            if(viewModel.measurement) {
+
+                Toast.makeText(context, "Messpunkt aufgenommen", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Messung muss aktiv sein", Toast.LENGTH_SHORT).show()
+            }
+        }
+    ) {
+        Text(text = "Messupunkt aufnehmen")
     }
 }
