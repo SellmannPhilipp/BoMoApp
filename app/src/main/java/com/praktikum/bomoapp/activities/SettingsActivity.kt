@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 
@@ -66,6 +67,8 @@ fun Settings() {
                 Column {
                     //NetworkTracking(networkViewModel)
                     //Spacer(modifier = Modifier.height(20.dp))
+                    MenuPath()
+                    Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     Marker()
@@ -264,6 +267,59 @@ fun MenuSamplingrate() {
                 onClick = {
                     selectedText = "UI"
                     SamplingRateViewModel.samplingRate = SensorManager.SENSOR_DELAY_UI
+                    isExpanded = false
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuPath() {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("Route") }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {isExpanded = it}
+    ) {
+        TextField(
+            value = selectedText,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "Ausblenden")},
+                onClick = {
+                    selectedText = "Ausblenden"
+                    PathController.setPathToShow(0)
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Route 1")},
+                onClick = {
+                    selectedText = "Route 1"
+                    PathController.setPathToShow(1)
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Route 2")},
+                onClick = {
+                    selectedText = "Route 2"
+                    PathController.setPathToShow(2)
                     isExpanded = false
                 }
             )
