@@ -36,6 +36,7 @@ import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
+import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 
 @Composable
@@ -43,11 +44,12 @@ fun Settings() {
     val tabOptions = listOf("Position", "Sensorik", "Speichern") // Füge hier die gewünschten Tab-Optionen hinzu
     var selectedTabIndex by remember { mutableStateOf(0) }
 
-    val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
+    //val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
     val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
     val accViewModel = AccelerometerViewModel(LocalContext.current)
     val gyrViewModel = GyroscopeViewModel(LocalContext.current)
     val mgnViewModel = MagnetometerViewModel(LocalContext.current)
+    val measurementViewModel = MeasurementViewModel(LocalContext.current)
 
     TabRow(selectedTabIndex) {
         tabOptions.forEachIndexed { index, title ->
@@ -71,7 +73,9 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    Marker()
+                    //Marker()
+                    //Spacer(modifier = Modifier.height(20.dp))
+                    Measurement(measurementViewModel)
                 }
             }
         }
@@ -200,6 +204,7 @@ fun Compass(viewModel: MagnetometerViewModel, acceleromter: AccelerometerViewMod
     }
 }
 
+/*
 @Composable
 fun Marker() {
     Button(
@@ -211,7 +216,7 @@ fun Marker() {
     ) {
         Text(text = "Markiere letzte bekannte Position")
     }
-}
+} */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -324,5 +329,18 @@ fun MenuPath() {
                 }
             )
         }
+    }
+}
+
+@Composable
+fun Measurement(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
+    Button(
+        onClick = {
+            viewModel.toggleMeasurement()
+        }
+    ) {
+        Text(text = "Messung: $btnTextEnabled")
     }
 }

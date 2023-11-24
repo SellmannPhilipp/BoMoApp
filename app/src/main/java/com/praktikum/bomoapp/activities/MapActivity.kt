@@ -46,9 +46,9 @@ fun OsmdroidMapView() {
             )
 
             if(PathController.getPathToShow() == 1) {
-                pathOne(mapView, polylinePointsOne)
+                showPathOnMap(mapView, polylinePointsOne)
             } else if(PathController.getPathToShow() == 2) {
-                pathTwo(mapView, polylinePointsTwo)
+                showPathOnMap(mapView, polylinePointsTwo)
             }
 
             mapView
@@ -76,7 +76,7 @@ fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, name: String) {
     mapView.invalidate()
 }
 
-fun pathOne(view: MapView, polylinePoints: List<GeoPoint>) {
+fun showPathOnMap(view: MapView, polylinePoints: List<GeoPoint>) {
     val mapView = view
 
     val polyline = Polyline()
@@ -90,28 +90,8 @@ fun pathOne(view: MapView, polylinePoints: List<GeoPoint>) {
     for (point in polylinePoints) {
         val marker = Marker(mapView)
         marker.position = point
-        marker.title = "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
-        mapView.overlays.add(marker)
-    }
-
-    mapView.invalidate()
-}
-
-fun pathTwo(view: MapView, polylinePoints: List<GeoPoint>) {
-    val mapView = view
-
-    val polyline = Polyline()
-    polyline.setPoints(polylinePoints)
-    polyline.color = 0x990000FF.toInt() // Farbe der Linie
-    polyline.width = 5f // Breite der Linie
-
-    mapView.overlayManager.add(polyline)
-
-    // Marker für jeden GeoPoint hinzufügen
-    for (point in polylinePoints) {
-        val marker = Marker(mapView)
-        marker.position = point
-        marker.title = "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
+        marker.title =
+            "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
         mapView.overlays.add(marker)
     }
 
