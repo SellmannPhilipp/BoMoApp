@@ -25,7 +25,7 @@ fun OsmdroidMapView() {
             val mapView = MapView(context)
             Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
             Configuration.getInstance().userAgentValue = "BoMoApp"
-            setMapCamera(mapView, GeoPoint(51.4818, 7.2162), 20)
+            setMapCamera(mapView, GeoPoint(51.4818, 7.2162), 15)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
             mapView.setMultiTouchControls(true)
             if(LastLocationViewModel.geoPoint.isNotNull()) {

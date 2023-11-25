@@ -73,8 +73,8 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    //Marker()
-                    //Spacer(modifier = Modifier.height(20.dp))
+                    Marker()
+                    Spacer(modifier = Modifier.height(20.dp))
                     Measurement(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     AddMeasuringPoint(measurementViewModel)
@@ -206,7 +206,7 @@ fun Compass(viewModel: MagnetometerViewModel, acceleromter: AccelerometerViewMod
     }
 }
 
-/*
+
 @Composable
 fun Marker() {
     Button(
@@ -218,7 +218,7 @@ fun Marker() {
     ) {
         Text(text = "Markiere letzte bekannte Position")
     }
-} */
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
