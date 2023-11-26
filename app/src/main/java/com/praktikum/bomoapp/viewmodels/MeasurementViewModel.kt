@@ -6,14 +6,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.praktikum.bomoapp.MeasuringPoint
 
 class MeasurementViewModel(context: Context) : ViewModel() {
     private var startTime: Long = 0
     private var endtime: Long = 0
+    var measuringPoints = arrayListOf<MeasuringPoint>()
     private var ctx = context
     var measurement by mutableStateOf(false)
 
     fun start() {
+        this.measuringPoints.clear()
         this.startTime = System.currentTimeMillis()
     }
 
