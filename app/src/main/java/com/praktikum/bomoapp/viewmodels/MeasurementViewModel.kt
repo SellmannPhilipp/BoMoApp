@@ -13,6 +13,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
 
     companion object {
         var userTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
+        var generalTackedMeasureMentPoints = arrayListOf<MeasuringPoint>()
         var showUserTrackedMeasuringPoints = false
     }
 

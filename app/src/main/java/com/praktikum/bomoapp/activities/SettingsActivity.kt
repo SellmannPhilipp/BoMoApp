@@ -80,6 +80,8 @@ fun Settings() {
                     Measurement(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     AddMeasuringPoint(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ShowUserTrackedMeasurementPoints(measurementViewModel)
                 }
             }
         }
@@ -365,5 +367,22 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
         }
     ) {
         Text(text = "Messupunkt aufnehmen")
+    }
+}
+
+@Composable
+fun ShowUserTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
+    Button(
+        onClick = {
+            if(MeasurementViewModel.showUserTrackedMeasuringPoints) {
+                MeasurementViewModel.showUserTrackedMeasuringPoints = false
+            } else {
+                MeasurementViewModel.showUserTrackedMeasuringPoints = true
+            }
+        }
+    ) {
+        Text(text = "Zeige selbst getrackte Punkte")
     }
 }
