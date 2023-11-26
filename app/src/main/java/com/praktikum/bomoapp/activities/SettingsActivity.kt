@@ -363,7 +363,7 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
             if(viewModel.measurement) {
                 var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
                 var fragments = lastLocation.split(",")
-                MeasurementViewModel.addMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+                MeasurementViewModel.addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
                 Toast.makeText(context, "Messpunkt aufgenommen", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Messung muss aktiv sein", Toast.LENGTH_SHORT).show()

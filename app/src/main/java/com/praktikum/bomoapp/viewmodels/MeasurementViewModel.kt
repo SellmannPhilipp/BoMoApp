@@ -18,8 +18,12 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         var showAllTrackedMeasuringPoints = false
         var measurementActive = false
 
-        fun addMeasuringPoint(location: GeoPoint, timestamp: Long) {
+        fun addUserMeasuringPoint(location: GeoPoint, timestamp: Long) {
             userTrackedMeasuringPoints.add(MeasuringPoint(location, timestamp))
+        }
+
+        fun addGeneralMeasuringPoint(location: GeoPoint, timestamp: Long) {
+            generalTrackedMeasuringPoints.add(MeasuringPoint(location, timestamp))
         }
     }
 

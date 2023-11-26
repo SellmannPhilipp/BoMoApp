@@ -36,7 +36,7 @@ object GpsLocationListenerSingleton {
                 if(MeasurementViewModel.measurementActive) {
                     var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
                     var fragments = lastLocation.split(",")
-                    MeasurementViewModel.addMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+                    MeasurementViewModel.addGeneralMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
                 }
             }
         }
