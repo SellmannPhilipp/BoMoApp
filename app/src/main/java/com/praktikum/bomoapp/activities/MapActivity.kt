@@ -1,5 +1,9 @@
 package com.praktikum.bomoapp.activities
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.preference.PreferenceManager
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -30,9 +34,10 @@ fun OsmdroidMapView() {
             setMapCamera(mapView, GeoPoint(51.4818, 7.2162), 15)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
             mapView.setMultiTouchControls(true)
+            /*
             if(LastLocationViewModel.geoPoint.isNotNull()) {
                 LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
-            }
+            } */
 
             //Route 1
             val polylinePointsOne = listOf(
@@ -55,13 +60,13 @@ fun OsmdroidMapView() {
 
             if(MeasurementViewModel.showUserTrackedMeasuringPoints) {
                 for (point in MeasurementViewModel.userTrackedMeasuringPoints) {
-                    addMarkerToMap(mapView, point.getLocation(), "Eigener Messpunkt")
+                    addMarkerToMap(mapView, point.getLocation(), "Eigener Messpunkt", Color.GREEN)
                 }
             }
 
             if(MeasurementViewModel.showAllTrackedMeasuringPoints) {
                 for (point in MeasurementViewModel.generalTrackedMeasuringPoints) {
-                    addMarkerToMap(mapView, point.getLocation(), "Automatischer Messpunkt")
+                    addMarkerToMap(mapView, point.getLocation(), "Automatischer Messpunkt", Color.BLUE)
                 }
             }
 
@@ -77,13 +82,20 @@ fun setMapCamera(view: MapView, geoPoint: GeoPoint, zoomLevel: Int) {
     mapController.setZoom(zoomLevel)
 }
 
-fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, name: String) {
+fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, title: String, color: Int) {
     val mapView = view
+
+    val oval = ShapeDrawable(OvalShape()).apply {
+        intrinsicHeight = 40 // Hier die gewünschte Höhe des Punkts einstellen
+        intrinsicWidth = 40 // Hier die gewünschte Breite des Punkts einstellen
+        paint.color = color
+    }
 
     val marker = Marker(mapView)
     marker.position = geoPoint
+    marker.icon = oval
     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-    marker.title = name
+    marker.title = title
 
     mapView.overlays.add(marker)
 
@@ -95,18 +107,14 @@ fun showPathOnMap(view: MapView, polylinePoints: List<GeoPoint>) {
 
     val polyline = Polyline()
     polyline.setPoints(polylinePoints)
-    polyline.color = 0x990000FF.toInt() // Farbe der Linie
+    polyline.color = Color.RED // Farbe der Linie
     polyline.width = 6f // Breite der Linie
 
     mapView.overlayManager.add(polyline)
 
     // Marker für jeden GeoPoint hinzufügen
     for (point in polylinePoints) {
-        val marker = Marker(mapView)
-        marker.position = point
-        marker.title =
-            "Vorgabe\n" + "Latitude: " + point.latitude + "\n" + "Longitude: " + point.longitude
-        mapView.overlays.add(marker)
+        addMarkerToMap(mapView, point, "Route", Color.RED)
     }
 
     mapView.invalidate()
