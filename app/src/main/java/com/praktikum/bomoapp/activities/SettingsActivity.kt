@@ -82,6 +82,8 @@ fun Settings() {
                     AddMeasuringPoint(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     ShowUserTrackedMeasurementPoints(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ShowAllTrackedMeasurementPoints(measurementViewModel)
                 }
             }
         }
@@ -359,7 +361,7 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
             if(viewModel.measurement) {
                 var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
                 var fragments = lastLocation.split(",")
-                viewModel.addMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+                MeasurementViewModel.addMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
                 Toast.makeText(context, "Messpunkt aufgenommen", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Messung muss aktiv sein", Toast.LENGTH_SHORT).show()
@@ -373,7 +375,6 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
 @Composable
 fun ShowUserTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
     var context: Context = LocalContext.current
-    var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
     Button(
         onClick = {
             if(MeasurementViewModel.showUserTrackedMeasuringPoints) {
@@ -383,6 +384,22 @@ fun ShowUserTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
             }
         }
     ) {
-        Text(text = "Zeige selbst getrackte Punkte")
+        Text(text = "Zeige selbst getrackte Messupunkte")
+    }
+}
+
+@Composable
+fun ShowAllTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    Button(
+        onClick = {
+            if(MeasurementViewModel.showAllTrackedMeasuringPoints) {
+                MeasurementViewModel.showAllTrackedMeasuringPoints = false
+            } else {
+                MeasurementViewModel.showAllTrackedMeasuringPoints = true
+            }
+        }
+    ) {
+        Text(text = "Zeige alle getrackte Messpunkte")
     }
 }

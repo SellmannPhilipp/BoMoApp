@@ -59,6 +59,12 @@ fun OsmdroidMapView() {
                 }
             }
 
+            if(MeasurementViewModel.showAllTrackedMeasuringPoints) {
+                for (point in MeasurementViewModel.generalTrackedMeasuringPoints) {
+                    addMarkerToMap(mapView, point.getLocation(), "Automatischer Messpunkt")
+                }
+            }
+
             mapView
         }
     )

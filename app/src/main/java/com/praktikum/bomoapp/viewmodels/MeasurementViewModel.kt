@@ -13,8 +13,14 @@ class MeasurementViewModel(context: Context) : ViewModel() {
 
     companion object {
         var userTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
-        var generalTackedMeasureMentPoints = arrayListOf<MeasuringPoint>()
+        var generalTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
         var showUserTrackedMeasuringPoints = false
+        var showAllTrackedMeasuringPoints = false
+        var measurementActive = false
+
+        fun addMeasuringPoint(location: GeoPoint, timestamp: Long) {
+            userTrackedMeasuringPoints.add(MeasuringPoint(location, timestamp))
+        }
     }
 
     private var startTime: Long = 0
@@ -23,15 +29,14 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     var measurement by mutableStateOf(false)
 
     fun start() {
+        measurementActive = true
         userTrackedMeasuringPoints.clear()
         this.startTime = System.currentTimeMillis()
     }
 
     fun stop() {
+        measurementActive = false
         this.endtime = System.currentTimeMillis()
-    }
-    fun addMeasuringPoint(location: GeoPoint, timestamp: Long) {
-        userTrackedMeasuringPoints.add(MeasuringPoint(location, timestamp))
     }
 
     fun getMeasuringPoints(): ArrayList<MeasuringPoint> {
