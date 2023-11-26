@@ -8,6 +8,7 @@ import NetworkTrackingViewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.SensorManager
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
+import org.osmdroid.util.GeoPoint
 
 @Composable
 fun Settings() {
@@ -353,7 +355,9 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
     Button(
         onClick = {
             if(viewModel.measurement) {
-
+                var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+                var fragments = lastLocation.split(",")
+                viewModel.addMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
                 Toast.makeText(context, "Messpunkt aufgenommen", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Messung muss aktiv sein", Toast.LENGTH_SHORT).show()

@@ -9,6 +9,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import co.yml.charts.common.extensions.isNotNull
 import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
+import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
