@@ -74,8 +74,8 @@ fun Settings() {
                     MenuPath()
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Marker()
+                    //Spacer(modifier = Modifier.height(20.dp))
+                    //Marker()
                     Spacer(modifier = Modifier.height(20.dp))
                     Measurement(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -212,7 +212,7 @@ fun Compass(viewModel: MagnetometerViewModel, acceleromter: AccelerometerViewMod
     }
 }
 
-
+/*
 @Composable
 fun Marker() {
     Button(
@@ -224,7 +224,7 @@ fun Marker() {
     ) {
         Text(text = "Markiere letzte bekannte Position")
     }
-}
+} */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -400,6 +400,6 @@ fun ShowAllTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
             }
         }
     ) {
-        Text(text = "Zeige alle getrackte Messpunkte")
+        Text(text = "Zeige alle getrackten Messpunkte")
     }
 }
