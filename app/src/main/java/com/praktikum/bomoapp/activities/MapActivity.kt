@@ -9,13 +9,13 @@ import androidx.compose.ui.viewinterop.AndroidView
 import co.yml.charts.common.extensions.isNotNull
 import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
-import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+
 
 @Composable
 fun OsmdroidMapView() {
@@ -83,7 +83,7 @@ fun showPathOnMap(view: MapView, polylinePoints: List<GeoPoint>) {
     val polyline = Polyline()
     polyline.setPoints(polylinePoints)
     polyline.color = 0x990000FF.toInt() // Farbe der Linie
-    polyline.width = 5f // Breite der Linie
+    polyline.width = 6f // Breite der Linie
 
     mapView.overlayManager.add(polyline)
 
