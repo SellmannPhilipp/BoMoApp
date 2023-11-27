@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,15 +59,16 @@ fun OsmdroidMapView() {
                 showPathOnMap(mapView, polylinePointsTwo)
             }
 
-            if(MeasurementViewModel.showUserTrackedMeasuringPoints) {
+            addMarkerToMap(mapView, GeoPoint(52.00, 7.00), "Test", Color.BLUE)
+            addMarkerToMap(mapView, GeoPoint(52.00, 7.00), "Test", Color.GREEN)
+
+            if(MeasurementViewModel.showTrackedMeasuringPoints) {
+                for (point in MeasurementViewModel.generalTrackedMeasuringPoints) {
+                    addMarkerToMap(mapView, point.getLocation(), "Allgemeiner Messpunkt", Color.BLUE)
+                }
+
                 for (point in MeasurementViewModel.userTrackedMeasuringPoints) {
                     addMarkerToMap(mapView, point.getLocation(), "Eigener Messpunkt", Color.GREEN)
-                }
-            }
-
-            if(MeasurementViewModel.showAllTrackedMeasuringPoints) {
-                for (point in MeasurementViewModel.generalTrackedMeasuringPoints) {
-                    addMarkerToMap(mapView, point.getLocation(), "Automatischer Messpunkt", Color.BLUE)
                 }
             }
 
@@ -86,8 +88,8 @@ fun addMarkerToMap(view: MapView, geoPoint: GeoPoint, title: String, color: Int)
     val mapView = view
 
     val oval = ShapeDrawable(OvalShape()).apply {
-        intrinsicHeight = 40 // Hier die gewünschte Höhe des Punkts einstellen
-        intrinsicWidth = 40 // Hier die gewünschte Breite des Punkts einstellen
+        intrinsicHeight = 30 // Hier die gewünschte Höhe des Punkts einstellen
+        intrinsicWidth = 30 // Hier die gewünschte Breite des Punkts einstellen
         paint.color = color
     }
 

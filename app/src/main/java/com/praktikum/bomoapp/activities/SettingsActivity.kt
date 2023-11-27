@@ -81,9 +81,7 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     AddMeasuringPoint(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
-                    ShowUserTrackedMeasurementPoints(measurementViewModel)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    ShowAllTrackedMeasurementPoints(measurementViewModel)
+                    ShowTrackedMeasurementPoints(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     InterpolatedPoints()
                 }
@@ -375,34 +373,18 @@ fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
 }
 
 @Composable
-fun ShowUserTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
+fun ShowTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
     var context: Context = LocalContext.current
     Button(
         onClick = {
-            if(MeasurementViewModel.showUserTrackedMeasuringPoints) {
-                MeasurementViewModel.showUserTrackedMeasuringPoints = false
+            if(MeasurementViewModel.showTrackedMeasuringPoints) {
+                MeasurementViewModel.showTrackedMeasuringPoints = false
             } else {
-                MeasurementViewModel.showUserTrackedMeasuringPoints = true
+                MeasurementViewModel.showTrackedMeasuringPoints = true
             }
         }
     ) {
-        Text(text = "Zeige selbst getrackte Messupunkte")
-    }
-}
-
-@Composable
-fun ShowAllTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
-    var context: Context = LocalContext.current
-    Button(
-        onClick = {
-            if(MeasurementViewModel.showAllTrackedMeasuringPoints) {
-                MeasurementViewModel.showAllTrackedMeasuringPoints = false
-            } else {
-                MeasurementViewModel.showAllTrackedMeasuringPoints = true
-            }
-        }
-    ) {
-        Text(text = "Zeige alle getrackten Messpunkte")
+        Text(text = "Zeige Messupunkte")
     }
 }
 

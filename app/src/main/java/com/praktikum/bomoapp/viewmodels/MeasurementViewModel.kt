@@ -14,8 +14,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     companion object {
         var userTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
         var generalTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
-        var showUserTrackedMeasuringPoints = false
-        var showAllTrackedMeasuringPoints = false
+        var showTrackedMeasuringPoints = false
         var measurementActive = false
 
         fun addUserMeasuringPoint(location: GeoPoint, timestamp: Long) {
@@ -32,9 +31,17 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     private var ctx = context
     var measurement by mutableStateOf(false)
 
+    init {
+        val sharedPreferences = context.getSharedPreferences("Measurement", Context.MODE_PRIVATE)
+
+        // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
+        measurement = sharedPreferences.getBoolean("measurement", false)
+    }
+
     fun start() {
         measurementActive = true
         userTrackedMeasuringPoints.clear()
+        generalTrackedMeasuringPoints.clear()
         this.startTime = System.currentTimeMillis()
     }
 
