@@ -18,6 +18,7 @@ class DataSaver : ViewModel() {
         val accelerometerList = mutableListOf("")
         val gyroscopeList = mutableListOf("")
         val compassList = mutableListOf("")
+        val fusedList = mutableListOf("")
         val lock = Any()
 
         fun saveAllData(context: Context){
@@ -26,19 +27,22 @@ class DataSaver : ViewModel() {
             var accelerometerListCopy: List<String>
             var gyroscopeListCopy: List<String>
             var compassListCopy: List<String>
+            var fusedListCopy: List<String>
             synchronized(lock) {
                 gpsListCopy = gpsList.toList()
                 networkListCopy = networkList.toList()
                 accelerometerListCopy = accelerometerList.toList()
                 gyroscopeListCopy =  gyroscopeList.toList()
                 compassListCopy =  compassList.toList()
+                fusedListCopy =  fusedList.toList()
                 gpsList.clear()
                 networkList.clear()
                 accelerometerList.clear()
                 gyroscopeList.clear()
                 compassList.clear()
+                fusedList.clear()
             }
-            val anzahlElemente = gpsListCopy.size + networkListCopy.size + accelerometerListCopy.size + gyroscopeListCopy.size + compassListCopy.size
+            val anzahlElemente = gpsListCopy.size + networkListCopy.size + accelerometerListCopy.size + gyroscopeListCopy.size + compassListCopy.size + fusedListCopy.size
             val toast = Toast(context)
             toast.setText("$anzahlElemente Daten werden gespeichert")
             toast.show()
@@ -50,6 +54,7 @@ class DataSaver : ViewModel() {
                 writeFile("acc.txt",accelerometerListCopy)
                 writeFile("gyro.txt",gyroscopeListCopy)
                 writeFile("compass.txt",compassListCopy)
+                writeFile("fusedLocation.txt",fusedListCopy)
             }
 
             //Dateispeicherung Server
@@ -127,6 +132,11 @@ class DataSaver : ViewModel() {
             if (!File("/storage/emulated/0/Download/compass.txt").exists()) {
                 val outputStream = FileOutputStream("/storage/emulated/0/Download/compass.txt")
                 outputStream.write("Time,orientation,magX,magY,magZ\n".toByteArray())
+                outputStream.close()
+            }
+            if (!File("/storage/emulated/0/Download/fusedLocation.txt").exists()) {
+                val outputStream = FileOutputStream("/storage/emulated/0/Download/fusedLocation.txt")
+                outputStream.write("Time,Latitude,Longitude\n".toByteArray())
                 outputStream.close()
             }
 

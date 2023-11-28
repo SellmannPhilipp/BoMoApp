@@ -8,6 +8,7 @@ import NetworkTrackingViewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.SensorManager
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,8 @@ fun Settings() {
             ) {
                 Column {
                     NetworkTracking(networkViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    MenuPosition()
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -133,6 +136,72 @@ fun NetworkTracking(viewModel: NetworkTrackingViewModel) {
         Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuPosition() {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("Pos Variante") }
+    var sharedPreferences = LocalContext.current.getSharedPreferences("GPS-Tracking",Context.MODE_PRIVATE)
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {isExpanded = it}
+    ) {
+        TextField(
+            value = selectedText,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "ACCURACY_HIGH")},
+                onClick = {
+                    selectedText = "ACCURACY_HIGH"
+                    with(sharedPreferences.edit()) {
+                        putInt("priority",1)
+                        apply()
+                    }
+                    Log.d("Priority setting", sharedPreferences.getInt("priority",5).toString())
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "BALANCED_POWER_ACCURACY")},
+                onClick = {
+                    selectedText = "BALANCED_POWER_ACCURACY"
+                    with(sharedPreferences.edit()) {
+                        putInt("priority",2)
+                        apply()
+                    }
+                    Log.d("Priority setting", sharedPreferences.getInt("priority",5).toString())
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "GPS_PROVIDER")},
+                onClick = {
+                    selectedText = "GPS_PROVIDER"
+                    with(sharedPreferences.edit()) {
+                        putInt("priority",3)
+                        apply()
+                    }
+                    Log.d("Priority setting", sharedPreferences.getInt("priority",5).toString())
+                    isExpanded = false
+                }
+            )
+        }
+    }
 }
 
 @Composable
