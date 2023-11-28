@@ -19,31 +19,32 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     private var ctx = context
     private var fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ctx)
 
-
-
     var tracking by mutableStateOf(false)
-    var sharedPriority by mutableStateOf(1)
 
     init {
         val sharedPreferences = context.getSharedPreferences("GPS-Tracking", Context.MODE_PRIVATE)
 
         // Wert von 'tracking' aus den SharedPreferences wiederherstellen (mit einem Standardwert von 'false')
         tracking = sharedPreferences.getBoolean("tracking", false)
-        sharedPriority = sharedPreferences.getInt("priority",1)
     }
 
     @SuppressLint("MissingPermission")
     fun start() {
         this.locationListener = GpsLocationListenerSingleton.getInstance(ctx)
-        var locationCallback = LocationCallbackSingelton.getInstance(ctx)
-        var locationRequest = FusedLocationSingleton.getInstance(ctx)
+        val locationCallback = LocationCallbackSingelton.getInstance(ctx)
+        val locationRequest = FusedLocationSingleton.getInstance(ctx)
+        val sharedPreferences = ctx.getSharedPreferences("GPS-Tracking", Context.MODE_PRIVATE)
         Log.d("Tracking","Instance erstellt")
 
         if (tracking) {
-            when(sharedPriority) {
-                1,2 -> fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback,Looper.getMainLooper())
-                3 -> locationListener?.let {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
+            when(sharedPreferences.getInt("priority",1)) {
+                1,2 -> {
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback,Looper.getMainLooper())
+                }
+                3 -> {
+                    locationListener?.let {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 0f, it)
+                    }
                 }
             }
 
@@ -53,6 +54,7 @@ class GpsTrackingViewModel(context: Context) : ViewModel() {
     fun stop() {
         this.locationListener = GpsLocationListenerSingleton.getInstance(ctx)
         locationListener?.let { locationManager.removeUpdates(it) }
+        fusedLocationProviderClient.removeLocationUpdates(LocationCallbackSingelton.getInstance(ctx))
     }
 
     fun toggleTracking() {
