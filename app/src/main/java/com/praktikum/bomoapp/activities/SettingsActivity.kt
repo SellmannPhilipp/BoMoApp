@@ -75,7 +75,7 @@ fun Settings() {
                     Spacer(modifier = Modifier.height(20.dp))
                     MenuPosition()
                     Spacer(modifier = Modifier.height(20.dp))
-                    GpsTracking(gpsViewModel)
+                    PositionTracking(gpsViewModel)
                     //Spacer(modifier = Modifier.height(20.dp))
                     //Marker()
                     Spacer(modifier = Modifier.height(20.dp))
@@ -219,12 +219,12 @@ fun MenuPosition() {
 }
 
 @Composable
-fun GpsTracking(viewModel: GpsTrackingViewModel) {
+fun PositionTracking(viewModel: GpsTrackingViewModel) {
     var btnTextEnabled = if (viewModel.tracking) "Ein" else "Aus"
 
 
     Button(onClick = { viewModel.toggleTracking() }) {
-        Text(text = "GPS-Tracking: $btnTextEnabled")
+        Text(text = "Position-Tracking: $btnTextEnabled")
     }
 }
 

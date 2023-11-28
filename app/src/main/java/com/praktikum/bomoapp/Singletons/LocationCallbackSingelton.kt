@@ -1,6 +1,7 @@
 package com.praktikum.bomoapp.Singletons
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,6 +29,7 @@ object LocationCallbackSingelton {
                         latitude = p0.lastLocation!!.latitude
                         longitude = p0.lastLocation!!.longitude
                         DataSaver.fusedList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+                        Log.d("Fused", "$latitude $longitude")
                     }
             }
         }

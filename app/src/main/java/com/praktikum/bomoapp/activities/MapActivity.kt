@@ -59,9 +59,6 @@ fun OsmdroidMapView() {
                 showPathOnMap(mapView, polylinePointsTwo)
             }
 
-            addMarkerToMap(mapView, GeoPoint(52.00, 7.00), "Test", Color.BLUE)
-            addMarkerToMap(mapView, GeoPoint(52.00, 7.00), "Test", Color.GREEN)
-
             if(MeasurementViewModel.showTrackedMeasuringPoints) {
                 for (point in MeasurementViewModel.generalTrackedMeasuringPoints) {
                     addMarkerToMap(mapView, point.getLocation(), "Allgemeiner Messpunkt", Color.BLUE)
