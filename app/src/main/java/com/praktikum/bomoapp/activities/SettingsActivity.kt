@@ -35,19 +35,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
+import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
+import org.osmdroid.util.GeoPoint
 
 @Composable
 fun Settings() {
     val tabOptions = listOf("Position", "Sensorik", "Speichern") // Füge hier die gewünschten Tab-Optionen hinzu
     var selectedTabIndex by remember { mutableStateOf(0) }
 
-    val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
+    //val networkViewModel = NetworkTrackingViewModel(LocalContext.current)
     val gpsViewModel = GpsTrackingViewModel(LocalContext.current)
     val accViewModel = AccelerometerViewModel(LocalContext.current)
     val gyrViewModel = GyroscopeViewModel(LocalContext.current)
     val mgnViewModel = MagnetometerViewModel(LocalContext.current)
+    val measurementViewModel = MeasurementViewModel(LocalContext.current)
 
     TabRow(selectedTabIndex) {
         tabOptions.forEachIndexed { index, title ->
@@ -65,13 +69,23 @@ fun Settings() {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
-                    NetworkTracking(networkViewModel)
+                    //NetworkTracking(networkViewModel)
+                    //Spacer(modifier = Modifier.height(20.dp))
+                    MenuPath()
                     Spacer(modifier = Modifier.height(20.dp))
                     MenuPosition()
                     Spacer(modifier = Modifier.height(20.dp))
                     GpsTracking(gpsViewModel)
+                    //Spacer(modifier = Modifier.height(20.dp))
+                    //Marker()
                     Spacer(modifier = Modifier.height(20.dp))
-                    Marker()
+                    Measurement(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    AddMeasuringPoint(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ShowTrackedMeasurementPoints(measurementViewModel)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    InterpolatedPoints()
                 }
             }
         }
@@ -81,7 +95,7 @@ fun Settings() {
                 contentAlignment = Alignment.Center
             ) {
                 Column {
-                    Menu()
+                    MenuSamplingrate()
                     Spacer(modifier = Modifier.height(20.dp))
                     Accelerometer(accViewModel, mgnViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -124,7 +138,7 @@ fun SaveDataButton() {
 }
 
 
-
+/*
 //Function to track location by network provider
 @SuppressLint("MissingPermission")
 @Composable
@@ -136,7 +150,7 @@ fun NetworkTracking(viewModel: NetworkTrackingViewModel) {
         Text(text = "Network-Tracking: $btnTextEnabled")
     }
 
-}
+} */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -266,6 +280,7 @@ fun Compass(viewModel: MagnetometerViewModel, acceleromter: AccelerometerViewMod
     }
 }
 
+/*
 @Composable
 fun Marker() {
     Button(
@@ -277,11 +292,11 @@ fun Marker() {
     ) {
         Text(text = "Markiere letzte bekannte Position")
     }
-}
+} */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Menu() {
+fun MenuSamplingrate() {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("Samplingrate") }
 
@@ -337,5 +352,118 @@ fun Menu() {
                 }
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuPath() {
+    var isExpanded by remember { mutableStateOf(false) }
+    var selectedText by remember { mutableStateOf("Route") }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = {isExpanded = it}
+    ) {
+        TextField(
+            value = selectedText,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "Ausblenden")},
+                onClick = {
+                    selectedText = "Ausblenden"
+                    PathController.setPathToShow(0)
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Route 1")},
+                onClick = {
+                    selectedText = "Route 1"
+                    PathController.setPathToShow(1)
+                    isExpanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(text = "Route 2")},
+                onClick = {
+                    selectedText = "Route 2"
+                    PathController.setPathToShow(2)
+                    isExpanded = false
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun Measurement(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
+    Button(
+        onClick = {
+            viewModel.toggleMeasurement()
+        }
+    ) {
+        Text(text = "Messung: $btnTextEnabled")
+    }
+}
+
+@Composable
+fun AddMeasuringPoint(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    Button(
+        onClick = {
+            if(viewModel.measurement) {
+                var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+                var fragments = lastLocation.split(",")
+                MeasurementViewModel.addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+                Toast.makeText(context, "Messpunkt aufgenommen", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Messung muss aktiv sein", Toast.LENGTH_SHORT).show()
+            }
+        }
+    ) {
+        Text(text = "Messupunkt aufnehmen")
+    }
+}
+
+@Composable
+fun ShowTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
+    var context: Context = LocalContext.current
+    Button(
+        onClick = {
+            if(MeasurementViewModel.showTrackedMeasuringPoints) {
+                MeasurementViewModel.showTrackedMeasuringPoints = false
+            } else {
+                MeasurementViewModel.showTrackedMeasuringPoints = true
+            }
+        }
+    ) {
+        Text(text = "Zeige Messupunkte")
+    }
+}
+
+@Composable
+fun InterpolatedPoints() {
+    var context: Context = LocalContext.current
+    Button(
+        onClick = {
+            Toast.makeText(context, "Noch nicht implementiert", Toast.LENGTH_SHORT).show()
+        }
+    ) {
+        Text(text = "Zeige interpolierte Punkte")
     }
 }
