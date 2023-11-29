@@ -4,8 +4,6 @@ import AccelerometerViewModel
 import GpsTrackingViewModel
 import GyroscopeViewModel
 import MagnetometerViewModel
-import NetworkTrackingViewModel
-import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.SensorManager
 import android.util.Log
@@ -35,9 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.praktikum.bomoapp.ChromeTab
 import com.praktikum.bomoapp.DataSaver
-import com.praktikum.bomoapp.PathController
-import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
+import com.praktikum.bomoapp.viewmodels.RouteViewModel
 import com.praktikum.bomoapp.viewmodels.SamplingRateViewModel
 import org.osmdroid.util.GeoPoint
 
@@ -384,7 +381,7 @@ fun MenuPath() {
                 text = { Text(text = "Ausblenden")},
                 onClick = {
                     selectedText = "Ausblenden"
-                    PathController.setPathToShow(0)
+                    RouteViewModel.setSelectedRoute(0)
                     isExpanded = false
                 }
             )
@@ -392,7 +389,7 @@ fun MenuPath() {
                 text = { Text(text = "Route 1")},
                 onClick = {
                     selectedText = "Route 1"
-                    PathController.setPathToShow(1)
+                    RouteViewModel.setSelectedRoute(1)
                     isExpanded = false
                 }
             )
@@ -400,7 +397,7 @@ fun MenuPath() {
                 text = { Text(text = "Route 2")},
                 onClick = {
                     selectedText = "Route 2"
-                    PathController.setPathToShow(2)
+                    RouteViewModel.setSelectedRoute(2)
                     isExpanded = false
                 }
             )

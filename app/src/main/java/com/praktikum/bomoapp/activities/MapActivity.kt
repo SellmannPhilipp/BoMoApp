@@ -1,19 +1,14 @@
 package com.praktikum.bomoapp.activities
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import co.yml.charts.common.extensions.isNotNull
-import com.praktikum.bomoapp.PathController
-import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import com.praktikum.bomoapp.viewmodels.RouteViewModel
 import org.osmdroid.config.Configuration
@@ -42,9 +37,9 @@ fun OsmdroidMapView() {
             } */
 
 
-            if(PathController.getPathToShow() == 1) {
+            if(RouteViewModel.getSelectedRoute() == 1) {
                 showPathOnMap(mapView, RouteViewModel.polylinePointsOne)
-            } else if(PathController.getPathToShow() == 2) {
+            } else if(RouteViewModel.getSelectedRoute() == 2) {
                 showPathOnMap(mapView, RouteViewModel.polylinePointsTwo)
             }
 
