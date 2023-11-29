@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,8 +54,7 @@ fun OsmdroidMapView() {
             }
 
             if(RouteViewModel.showInterpolated) {
-                var liste = RouteViewModel.linearInterpolationBetweenPoints(GeoPoint(51.48122, 7.22009), GeoPoint(51.48435, 7.23187), 0, 12000, 1000)
-                Log.d("Debug", "${liste.size}")
+                var liste = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsOne)
                 for(points in liste) {
                     addMarkerToMap(mapView, GeoPoint(points.latitude, points.longitude), "Interpoliert", Color.YELLOW)
                 }
