@@ -1,7 +1,9 @@
 package com.praktikum.bomoapp.viewmodels
 
+import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
+import android.widget.EditText
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,6 +50,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     fun stop() {
         measurementActive = false
         this.endtime = System.currentTimeMillis()
+        showInputDialog(ctx)
     }
 
     fun getMeasuringPoints(): ArrayList<MeasuringPoint> {
@@ -69,10 +72,27 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         // Änderungen speichern
         editor.apply()
 
-        if(measurement) {
+        if (measurement) {
             start()
         } else {
             stop()
         }
+    }
+
+    fun showInputDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Dateiname eingeben")
+        val input = EditText(context)
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { dialog, which ->
+            val enteredText = input.text.toString()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 }

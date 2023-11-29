@@ -467,3 +467,4 @@ fun InterpolatedPoints() {
         Text(text = "Zeige interpolierte Punkte")
     }
 }
+
