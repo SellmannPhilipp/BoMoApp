@@ -458,7 +458,8 @@ fun InterpolatedPoints() {
     var context: Context = LocalContext.current
     Button(
         onClick = {
-            Toast.makeText(context, "Noch nicht implementiert", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Noch nicht implementiert", Toast.LENGTH_SHORT).show()
+            RouteViewModel.showInterpolated = !RouteViewModel.showInterpolated
         }
     ) {
         Text(text = "Zeige interpolierte Punkte")
