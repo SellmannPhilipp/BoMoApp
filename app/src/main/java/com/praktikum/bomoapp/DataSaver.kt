@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.praktikum.bomoapp.activities.Measurement
+import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import com.praktikum.bomoapp.viewmodels.RouteViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
@@ -131,6 +133,16 @@ class DataSaver : ViewModel() {
             }
 
             for(points in routeToSave) {
+                latitude = points.latitude.toString()
+                longitiude = points.longitude.toString()
+                outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + "\n".toByteArray())
+            }
+
+            outputStream.write("\n".toByteArray())
+
+            //Speichere interpolierte Punkte
+
+            for(points in MeasurementViewModel.interpolatedPoints) {
                 latitude = points.latitude.toString()
                 longitiude = points.longitude.toString()
                 outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + "\n".toByteArray())

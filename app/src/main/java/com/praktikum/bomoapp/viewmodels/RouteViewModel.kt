@@ -5,7 +5,6 @@ import org.osmdroid.util.GeoPoint
 class RouteViewModel {
     companion object {
         private var selectedRoute = 0
-        lateinit var interpolatedPoints: ArrayList<GeoPoint>
         var showInterpolated = false
 
         //Route 1
