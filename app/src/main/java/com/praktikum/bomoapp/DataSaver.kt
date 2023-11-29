@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.praktikum.bomoapp.viewmodels.RouteViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.osmdroid.util.GeoPoint
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.concurrent.thread
@@ -119,6 +121,22 @@ class DataSaver : ViewModel() {
             var latitude: String = ""
             var longitiude: String = ""
             var timestamp: String = ""
+
+            //Speichere eingestellte Route
+            var routeToSave = listOf<GeoPoint>()
+            if(RouteViewModel.getSelectedRoute() == 1) {
+                routeToSave = RouteViewModel.polylinePointsOne
+            } else if(RouteViewModel.getSelectedRoute() == 2) {
+                routeToSave = RouteViewModel.polylinePointsTwo
+            }
+
+            for(points in routeToSave) {
+                latitude = points.latitude.toString()
+                longitiude = points.longitude.toString()
+                outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + "\n".toByteArray())
+            }
+
+            outputStream.write("\n".toByteArray())
 
             //Speichern der allgemein erfassten Messdaten
             for(measuring in generalTrackedMeasuringPoints) {
