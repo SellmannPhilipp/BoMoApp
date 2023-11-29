@@ -88,7 +88,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
 
         builder.setPositiveButton("OK") { dialog, which ->
             val enteredText = input.text.toString()
-            DataSaver.writeMeasurement(enteredText, startTime, endtime, generalTrackedMeasuringPoints)
+            DataSaver.writeMeasurement(enteredText, startTime, endtime, generalTrackedMeasuringPoints, userTrackedMeasuringPoints)
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->

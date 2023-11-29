@@ -15,6 +15,7 @@ import co.yml.charts.common.extensions.isNotNull
 import com.praktikum.bomoapp.PathController
 import com.praktikum.bomoapp.viewmodels.LastLocationViewModel
 import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
+import com.praktikum.bomoapp.viewmodels.RouteViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
@@ -40,23 +41,11 @@ fun OsmdroidMapView() {
                 LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
             } */
 
-            //Route 1
-            val polylinePointsOne = listOf(
-                GeoPoint(51.48122, 7.22009),
-                GeoPoint(51.48435, 7.23187),
-                GeoPoint(51.49931, 7.19633),
-            )
-
-            //Route 2
-            val polylinePointsTwo = listOf(
-                GeoPoint(51.48122, 7.22009),
-                GeoPoint(51.48435, 7.23187),
-            )
 
             if(PathController.getPathToShow() == 1) {
-                showPathOnMap(mapView, polylinePointsOne)
+                showPathOnMap(mapView, RouteViewModel.polylinePointsOne)
             } else if(PathController.getPathToShow() == 2) {
-                showPathOnMap(mapView, polylinePointsTwo)
+                showPathOnMap(mapView, RouteViewModel.polylinePointsTwo)
             }
 
             if(MeasurementViewModel.showTrackedMeasuringPoints) {

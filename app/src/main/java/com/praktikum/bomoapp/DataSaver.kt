@@ -108,11 +108,12 @@ class DataSaver : ViewModel() {
             outputStream.close()
         }
 
-        fun writeMeasurement(filename: String, start: Long, end: Long, generalTrackedMeasuringPoints: ArrayList<MeasuringPoint>)  {
+        fun writeMeasurement(filename: String, start: Long, end: Long, generalTrackedMeasuringPoints: ArrayList<MeasuringPoint>, userTrackedMeasuringPoints: ArrayList<MeasuringPoint>)  {
             val outputStream = FileOutputStream("/storage/emulated/0/Download/"+filename+".txt",true)
 
             //Speichern der Zeitstempel
             outputStream.write(start.toString().toByteArray() + ",".toByteArray() + end.toString().toByteArray() + "\n".toByteArray())
+
             outputStream.write("\n".toByteArray())
 
             var latitude: String = ""
@@ -121,6 +122,16 @@ class DataSaver : ViewModel() {
 
             //Speichern der allgemein erfassten Messdaten
             for(measuring in generalTrackedMeasuringPoints) {
+                latitude = measuring.getLocation().latitude.toString()
+                longitiude = measuring.getLocation().longitude.toString()
+                timestamp = measuring.getTimestamp().toString()
+                outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + ",".toByteArray() + timestamp.toByteArray() + "\n".toByteArray())
+            }
+
+            outputStream.write("\n".toByteArray())
+
+            //Speichere Messpunkte des Benutzers
+            for(measuring in userTrackedMeasuringPoints) {
                 latitude = measuring.getLocation().latitude.toString()
                 longitiude = measuring.getLocation().longitude.toString()
                 timestamp = measuring.getTimestamp().toString()
