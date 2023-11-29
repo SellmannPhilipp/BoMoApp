@@ -5,7 +5,6 @@ import org.osmdroid.util.GeoPoint
 class MeasuringPoint {
     private lateinit var location: GeoPoint
     private var timestamp: Long = 0
-    private var userTracked = false
 
     constructor(location: GeoPoint, timestamp: Long) {
         this.location = location

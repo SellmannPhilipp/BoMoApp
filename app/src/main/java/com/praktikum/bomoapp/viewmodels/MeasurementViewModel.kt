@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.MeasuringPoint
 import org.osmdroid.util.GeoPoint
 
@@ -87,6 +88,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
 
         builder.setPositiveButton("OK") { dialog, which ->
             val enteredText = input.text.toString()
+            DataSaver.writeMeasurement(enteredText, startTime, endtime, generalTrackedMeasuringPoints)
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->

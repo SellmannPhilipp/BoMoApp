@@ -1,6 +1,7 @@
 package com.praktikum.bomoapp
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -104,6 +105,28 @@ class DataSaver : ViewModel() {
         private fun writeFile(dateiName: String,liste:  List<String>) {
             val outputStream = FileOutputStream("/storage/emulated/0/Download/"+dateiName,true)
             outputStream.write(liste.joinToString("").toByteArray())
+            outputStream.close()
+        }
+
+        fun writeMeasurement(filename: String, start: Long, end: Long, generalTrackedMeasuringPoints: ArrayList<MeasuringPoint>)  {
+            val outputStream = FileOutputStream("/storage/emulated/0/Download/"+filename+".txt",true)
+
+            //Speichern der Zeitstempel
+            outputStream.write(start.toString().toByteArray() + ",".toByteArray() + end.toString().toByteArray() + "\n".toByteArray())
+            outputStream.write("\n".toByteArray())
+
+            var latitude: String = ""
+            var longitiude: String = ""
+            var timestamp: String = ""
+
+            //Speichern der allgemein erfassten Messdaten
+            for(measuring in generalTrackedMeasuringPoints) {
+                latitude = measuring.getLocation().latitude.toString()
+                longitiude = measuring.getLocation().longitude.toString()
+                timestamp = measuring.getTimestamp().toString()
+                outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + ",".toByteArray() + timestamp.toByteArray() + "\n".toByteArray())
+            }
+
             outputStream.close()
         }
 
