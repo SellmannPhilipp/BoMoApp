@@ -47,8 +47,8 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         generalTrackedMeasuringPoints.clear()
         interpolatedPoints.clear()
 
-        if(DataSaver.gpsList.size > 0) {
-            var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+        if(DataSaver.gpsList.isNotEmpty()) {
+            var lastLocation = DataSaver.gpsList.last()
             var fragments = lastLocation.split(",")
             addUserMeasuringPoint(
                 GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),
@@ -61,8 +61,8 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     }
 
     fun stop() {
-        if(DataSaver.gpsList.size > 0) {
-            var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+        if(DataSaver.gpsList.isNotEmpty()) {
+            var lastLocation = DataSaver.gpsList.last()
             var fragments = lastLocation.split(",")
             addUserMeasuringPoint(
                 GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),

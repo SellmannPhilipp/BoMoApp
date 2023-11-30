@@ -76,7 +76,7 @@ fun Settings() {
                     //Spacer(modifier = Modifier.height(20.dp))
                     //Marker()
                     Spacer(modifier = Modifier.height(20.dp))
-                    Measurement(measurementViewModel)
+                    Measurement(measurementViewModel, gpsViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     AddMeasuringPoint(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
@@ -406,12 +406,19 @@ fun MenuPath() {
 }
 
 @Composable
-fun Measurement(viewModel: MeasurementViewModel) {
+fun Measurement(viewModel: MeasurementViewModel, trackingViewModel: GpsTrackingViewModel) {
     var context: Context = LocalContext.current
     var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
     Button(
         onClick = {
-            viewModel.toggleMeasurement()
+            if(trackingViewModel.tracking) {
+                viewModel.toggleMeasurement()
+            } else {
+                Toast.makeText(context, "Tracking muss aktiv sein", Toast.LENGTH_SHORT).show()
+                if(viewModel.measurement) {
+                    viewModel.toggleMeasurement()
+                }
+            }
         }
     ) {
         Text(text = "Messung: $btnTextEnabled")
