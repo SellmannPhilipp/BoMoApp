@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.viewmodels
 
+import com.praktikum.bomoapp.MeasuringPoint
 import org.osmdroid.util.GeoPoint
 
 class RouteViewModel {
@@ -28,8 +29,8 @@ class RouteViewModel {
             return selectedRoute
         }
 
-        fun linearInterpolationBetweenPoints(pointA: GeoPoint, pointB: GeoPoint, t1: Long, t2: Long, timeIntervalMillis: Int): List<GeoPoint> {
-            val interpolatedPoints = mutableListOf<GeoPoint>()
+        fun linearInterpolationBetweenPoints(pointA: GeoPoint, pointB: GeoPoint, t1: Long, t2: Long, timeIntervalMillis: Int): List<MeasuringPoint> {
+            val interpolatedPoints = mutableListOf<MeasuringPoint>()
 
             val deltaLongitude = pointB.longitude - pointA.longitude
             val deltaLatitude = pointB.latitude - pointA.latitude
@@ -41,18 +42,18 @@ class RouteViewModel {
                 val newLongitude = pointA.longitude + deltaLongitude * deltaT
                 val newLatitude = pointA.latitude + deltaLatitude * deltaT
                 val newCoordinate = GeoPoint(newLatitude, newLongitude)
-                interpolatedPoints.add(newCoordinate)
+                interpolatedPoints.add(MeasuringPoint(newCoordinate, t))
                 t += timeIntervalMillis
             }
 
             // Füge den Endpunkt hinzu, um sicherzustellen, dass alle Punkte enthalten sind
-            interpolatedPoints.add(pointB)
+            interpolatedPoints.add(MeasuringPoint(pointB, t))
 
             return interpolatedPoints
         }
 
-        fun interpolateRoute(points: List<GeoPoint>): List<GeoPoint> {
-            val interpolatedPoints = mutableListOf<GeoPoint>()
+        fun interpolateRoute(points: List<GeoPoint>): List<MeasuringPoint> {
+            val interpolatedPoints = mutableListOf<MeasuringPoint>()
             var length = points.size - 1
             var i = 0
 

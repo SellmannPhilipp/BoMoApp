@@ -39,7 +39,7 @@ fun OsmdroidMapView() {
             if(RouteViewModel.showInterpolated) {
                 var liste = MeasurementViewModel.interpolatedPoints
                 for(points in liste) {
-                    addMarkerToMap(mapView, GeoPoint(points.latitude, points.longitude), "Interpoliert", Color.YELLOW)
+                    addMarkerToMap(mapView, GeoPoint(points.getLocation().latitude, points.getLocation().longitude), "Interpoliert", Color.YELLOW)
                 }
             }
 

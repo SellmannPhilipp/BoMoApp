@@ -18,7 +18,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         var userTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
         var generalTrackedMeasuringPoints = arrayListOf<MeasuringPoint>()
         var showTrackedMeasuringPoints = false
-        var interpolatedPoints = arrayListOf<GeoPoint>()
+        var interpolatedPoints = arrayListOf<MeasuringPoint>()
         var measurementActive = false
 
         fun addUserMeasuringPoint(location: GeoPoint, timestamp: Long) {
@@ -65,9 +65,9 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         this.endtime = System.currentTimeMillis()
 
         if(RouteViewModel.getSelectedRoute() == 1) {
-            interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsOne) as ArrayList<GeoPoint>
+            interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsOne) as ArrayList<MeasuringPoint>
         } else if(RouteViewModel.getSelectedRoute() == 2) {
-            interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsTwo) as ArrayList<GeoPoint>
+            interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsTwo) as ArrayList<MeasuringPoint>
         }
 
         showInputDialog(ctx)

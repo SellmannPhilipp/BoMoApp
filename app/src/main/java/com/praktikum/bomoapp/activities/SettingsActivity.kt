@@ -406,7 +406,7 @@ fun MenuPath() {
 }
 
 @Composable
-fun Measurement(viewModel: MeasurementViewModel) {
+fun Measurement(viewModel: MeasurementViewModel, tracking: GpsTrackingViewModel) {
     var context: Context = LocalContext.current
     var btnTextEnabled = if (viewModel.measurement) "Ein" else "Aus"
     Button(
