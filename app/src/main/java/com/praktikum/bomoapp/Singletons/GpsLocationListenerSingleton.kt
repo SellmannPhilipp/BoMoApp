@@ -36,7 +36,6 @@ object GpsLocationListenerSingleton {
                 //LastLocationViewModel.locationList.add("${location.latitude}" + "," + "${location.longitude}" + "\n")
 
                 if(MeasurementViewModel.measurementActive) {
-                    Log.d("Debug", "Eingefügt")
                     MeasurementViewModel.generalTrackedMeasuringPoints.add(MeasuringPoint(GeoPoint(latitude, longitude), System.currentTimeMillis()))
                 }
             }

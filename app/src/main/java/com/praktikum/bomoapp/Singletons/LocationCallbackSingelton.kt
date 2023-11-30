@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.praktikum.bomoapp.DataSaver
+import com.praktikum.bomoapp.MeasuringPoint
 import com.praktikum.bomoapp.viewmodels.MeasurementViewModel
 import org.osmdroid.util.GeoPoint
 
@@ -32,6 +33,10 @@ object LocationCallbackSingelton {
                     longitude = p0.lastLocation!!.longitude
                     DataSaver.fusedList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
                     Log.d("Fused", "$latitude $longitude")
+
+                    if(MeasurementViewModel.measurementActive) {
+                        MeasurementViewModel.generalTrackedMeasuringPoints.add(MeasuringPoint(GeoPoint(latitude, longitude), System.currentTimeMillis()))
+                    }
                 }
             }
         }
