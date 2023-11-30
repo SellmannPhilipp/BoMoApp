@@ -1,5 +1,6 @@
 package com.praktikum.bomoapp.viewmodels
 
+import android.util.Log
 import com.praktikum.bomoapp.MeasuringPoint
 import org.osmdroid.util.GeoPoint
 
@@ -57,14 +58,19 @@ class RouteViewModel {
             var length = points.size - 1
             var i = 0
 
-            while(i < length) {
-                var pointA = points[i]
-                var pointB = points[i+1]
-                var t1 = MeasurementViewModel.userTrackedMeasuringPoints[i].getTimestamp()
-                var t2 = MeasurementViewModel.userTrackedMeasuringPoints[i+1].getTimestamp()
-                var timeInMillis = 1000
-                interpolatedPoints.addAll(linearInterpolationBetweenPoints(pointA, pointB, t1, t2, timeInMillis))
-                i += 1
+            while (i < length) {
+                if (MeasurementViewModel.userTrackedMeasuringPoints.size > i + 1) {
+                    var pointA = points[i]
+                    var pointB = points[i + 1]
+                    var t1 = MeasurementViewModel.userTrackedMeasuringPoints[i].getTimestamp()
+                    var t2 = MeasurementViewModel.userTrackedMeasuringPoints[i + 1].getTimestamp()
+                    var timeInMillis = 1000
+                    interpolatedPoints.addAll(linearInterpolationBetweenPoints(pointA, pointB, t1, t2, timeInMillis))
+                    i += 1
+                } else {
+                    Log.d("Problem", "Problem")
+                    break
+                }
             }
 
             return interpolatedPoints

@@ -30,14 +30,8 @@ object LocationCallbackSingelton {
                 if(p0.lastLocation != null) {
                     latitude = p0.lastLocation!!.latitude
                     longitude = p0.lastLocation!!.longitude
-                    DataSaver.gpsList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
+                    DataSaver.fusedList.add(System.currentTimeMillis().toString()+","+latitude+","+longitude+"\n")
                     Log.d("Fused", "$latitude $longitude")
-
-                    if(MeasurementViewModel.measurementActive) {
-                        var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
-                        var fragments = lastLocation.split(",")
-                        MeasurementViewModel.addGeneralMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
-                    }
                 }
             }
         }

@@ -28,6 +28,11 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         fun addGeneralMeasuringPoint(location: GeoPoint, timestamp: Long) {
             generalTrackedMeasuringPoints.add(MeasuringPoint(location, timestamp))
         }
+
+        fun addUserMeasuringPoint() {
+            var lastLocation = generalTrackedMeasuringPoints.last()
+            addUserMeasuringPoint(lastLocation.getLocation(), lastLocation.getTimestamp())
+        }
     }
 
     private var startTime: Long = 0
@@ -43,34 +48,22 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     }
 
     fun start() {
+        measurementActive = true
         userTrackedMeasuringPoints.clear()
         generalTrackedMeasuringPoints.clear()
         interpolatedPoints.clear()
 
-        if(DataSaver.gpsList.isNotEmpty()) {
-            var lastLocation = DataSaver.gpsList.last()
-            var fragments = lastLocation.split(",")
-            addUserMeasuringPoint(
-                GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),
-                fragments[0].toLong()
-            )
-        }
-
         this.startTime = System.currentTimeMillis()
-        measurementActive = true
     }
 
     fun stop() {
-        if(DataSaver.gpsList.isNotEmpty()) {
-            var lastLocation = DataSaver.gpsList.last()
-            var fragments = lastLocation.split(",")
-            addUserMeasuringPoint(
-                GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),
-                fragments[0].toLong()
-            )
-        }
-
+        measurementActive = false
         this.endtime = System.currentTimeMillis()
+
+        if(generalTrackedMeasuringPoints.isNotEmpty()) {
+            addUserMeasuringPoint(generalTrackedMeasuringPoints.last().getLocation(), generalTrackedMeasuringPoints.last().getTimestamp())
+            userTrackedMeasuringPoints.add(0, MeasuringPoint(generalTrackedMeasuringPoints.first().getLocation(), generalTrackedMeasuringPoints.first().getTimestamp()))
+        }
 
         if(RouteViewModel.getSelectedRoute() == 1) {
             interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsOne) as ArrayList<MeasuringPoint>
@@ -78,12 +71,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
             interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsTwo) as ArrayList<MeasuringPoint>
         }
 
-        measurementActive = false
         showInputDialog(ctx)
-    }
-
-    fun getMeasuringPoints(): ArrayList<MeasuringPoint> {
-        return userTrackedMeasuringPoints
     }
 
     fun toggleMeasurement() {
