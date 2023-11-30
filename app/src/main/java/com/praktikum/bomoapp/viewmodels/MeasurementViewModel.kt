@@ -47,11 +47,21 @@ class MeasurementViewModel(context: Context) : ViewModel() {
         userTrackedMeasuringPoints.clear()
         generalTrackedMeasuringPoints.clear()
         interpolatedPoints.clear()
+
+        var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+        var fragments = lastLocation.split(",")
+        addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+
         this.startTime = System.currentTimeMillis()
     }
 
     fun stop() {
         measurementActive = false
+
+        var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+        var fragments = lastLocation.split(",")
+        addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+
         this.endtime = System.currentTimeMillis()
 
         if(RouteViewModel.getSelectedRoute() == 1) {
