@@ -2,7 +2,6 @@ package com.praktikum.bomoapp.viewmodels
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
 import android.widget.EditText
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.praktikum.bomoapp.DataSaver
 import com.praktikum.bomoapp.MeasuringPoint
+import com.praktikum.bomoapp.activities.Data
 import org.osmdroid.util.GeoPoint
 
 class MeasurementViewModel(context: Context) : ViewModel() {
@@ -43,24 +43,32 @@ class MeasurementViewModel(context: Context) : ViewModel() {
     }
 
     fun start() {
-        measurementActive = true
         userTrackedMeasuringPoints.clear()
         generalTrackedMeasuringPoints.clear()
         interpolatedPoints.clear()
 
-        var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
-        var fragments = lastLocation.split(",")
-        addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+        if(DataSaver.gpsList.size > 0) {
+            var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+            var fragments = lastLocation.split(",")
+            addUserMeasuringPoint(
+                GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),
+                fragments[0].toLong()
+            )
+        }
 
         this.startTime = System.currentTimeMillis()
+        measurementActive = true
     }
 
     fun stop() {
-        measurementActive = false
-
-        var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
-        var fragments = lastLocation.split(",")
-        addUserMeasuringPoint(GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()), fragments[0].toLong())
+        if(DataSaver.gpsList.size > 0) {
+            var lastLocation = DataSaver.gpsList.get(DataSaver.gpsList.size - 1)
+            var fragments = lastLocation.split(",")
+            addUserMeasuringPoint(
+                GeoPoint(fragments[1].toDouble(), fragments[2].toDouble()),
+                fragments[0].toLong()
+            )
+        }
 
         this.endtime = System.currentTimeMillis()
 
@@ -70,6 +78,7 @@ class MeasurementViewModel(context: Context) : ViewModel() {
             interpolatedPoints = RouteViewModel.interpolateRoute(RouteViewModel.polylinePointsTwo) as ArrayList<MeasuringPoint>
         }
 
+        measurementActive = false
         showInputDialog(ctx)
     }
 
