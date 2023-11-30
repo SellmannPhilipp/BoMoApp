@@ -81,8 +81,6 @@ fun Settings() {
                     AddMeasuringPoint(measurementViewModel)
                     Spacer(modifier = Modifier.height(20.dp))
                     ShowTrackedMeasurementPoints(measurementViewModel)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    InterpolatedPoints()
                 }
             }
         }
@@ -457,17 +455,3 @@ fun ShowTrackedMeasurementPoints(viewModel: MeasurementViewModel) {
         Text(text = "Zeige Messupunkte")
     }
 }
-
-@Composable
-fun InterpolatedPoints() {
-    var context: Context = LocalContext.current
-    Button(
-        onClick = {
-            //Toast.makeText(context, "Noch nicht implementiert", Toast.LENGTH_SHORT).show()
-            RouteViewModel.showInterpolated = !RouteViewModel.showInterpolated
-        }
-    ) {
-        Text(text = "Zeige interpolierte Punkte")
-    }
-}
-

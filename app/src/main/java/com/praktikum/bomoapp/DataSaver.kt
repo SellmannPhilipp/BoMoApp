@@ -140,17 +140,6 @@ class DataSaver : ViewModel() {
 
             outputStream.write("\n".toByteArray())
 
-            //Speichere interpolierte Punkte
-
-            for(points in MeasurementViewModel.interpolatedPoints) {
-                latitude = points.getLocation().latitude.toString()
-                longitiude = points.getLocation().longitude.toString()
-                timestamp = points.getTimestamp().toString()
-                outputStream.write(latitude.toByteArray() + ",".toByteArray() + longitiude.toByteArray() + ",".toByteArray() + timestamp.toByteArray() + "\n".toByteArray())
-            }
-
-            outputStream.write("\n".toByteArray())
-
             //Speichern der allgemein erfassten Messdaten
             for(measuring in generalTrackedMeasuringPoints) {
                 latitude = measuring.getLocation().latitude.toString()
