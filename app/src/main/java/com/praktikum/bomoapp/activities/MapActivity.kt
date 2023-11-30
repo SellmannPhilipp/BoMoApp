@@ -36,6 +36,12 @@ fun OsmdroidMapView() {
                 LastLocationViewModel.geoPoint?.let { addMarkerToMap(mapView, it, "Position") }
             } */
 
+            if(RouteViewModel.showInterpolated) {
+                var liste = MeasurementViewModel.interpolatedPoints
+                for(points in liste) {
+                    addMarkerToMap(mapView, GeoPoint(points.latitude, points.longitude), "Interpoliert", Color.YELLOW)
+                }
+            }
 
             if(RouteViewModel.getSelectedRoute() == 1) {
                 showPathOnMap(mapView, RouteViewModel.polylinePointsOne)
@@ -50,13 +56,6 @@ fun OsmdroidMapView() {
 
                 for (point in MeasurementViewModel.userTrackedMeasuringPoints) {
                     addMarkerToMap(mapView, point.getLocation(), "Eigener Messpunkt", Color.GREEN)
-                }
-            }
-
-            if(RouteViewModel.showInterpolated) {
-                var liste = MeasurementViewModel.interpolatedPoints
-                for(points in liste) {
-                    addMarkerToMap(mapView, GeoPoint(points.latitude, points.longitude), "Interpoliert", Color.YELLOW)
                 }
             }
 
