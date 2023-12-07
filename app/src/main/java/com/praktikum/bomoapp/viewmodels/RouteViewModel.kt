@@ -11,13 +11,13 @@ class RouteViewModel {
             GeoPoint(51.44719, 7.27218),
             GeoPoint(51.44688, 7.27248),
             GeoPoint(51.44659, 7.27273),
-            GeoPoint(51.44723, 7.27354),
-            GeoPoint(51.44676, 7.27326),
-            GeoPoint(51.44753, 7.27329),
-            GeoPoint(51.4469, 7.27368),
-            GeoPoint(51.44736, 7.27277),
-            GeoPoint(51.44699, 7.2736),
-            GeoPoint(51.4471, 7.2735),
+            GeoPoint(51.44677, 7.27328),
+            GeoPoint(51.44689, 7.27368),
+            GeoPoint(51.44699, 7.27359),
+            GeoPoint(51.44709, 7.27352),
+            GeoPoint(51.44723, 7.27353),
+            GeoPoint(51.4475, 7.27331),
+            GeoPoint(51.44734, 7.27279),
         )
 
         //Route 2
