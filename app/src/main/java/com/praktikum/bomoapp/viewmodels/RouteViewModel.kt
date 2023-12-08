@@ -8,16 +8,16 @@ class RouteViewModel {
 
         //Route 1
         val polylinePointsOne = listOf(
-            GeoPoint(51.44719, 7.27218),
-            GeoPoint(51.44688, 7.27248),
-            GeoPoint(51.44659, 7.27273),
-            GeoPoint(51.44677, 7.27328),
-            GeoPoint(51.44689, 7.27368),
-            GeoPoint(51.44699, 7.27359),
-            GeoPoint(51.44709, 7.27352),
-            GeoPoint(51.44723, 7.27353),
-            GeoPoint(51.4475, 7.27331),
-            GeoPoint(51.44734, 7.27279),
+            GeoPoint(51.4465, 7.2719),
+            GeoPoint(51.44641, 7.27196),
+            GeoPoint(51.44629, 7.27206),
+            GeoPoint(51.44646, 7.27227),
+            GeoPoint(51.44661, 7.2727),
+            GeoPoint(51.44687, 7.27246),
+            GeoPoint(51.44718, 7.2722),
+            GeoPoint(51.44728, 7.27252),
+            GeoPoint(51.44741, 7.27293),
+            GeoPoint(51.44751, 7.27329),
         )
 
         //Route 2
