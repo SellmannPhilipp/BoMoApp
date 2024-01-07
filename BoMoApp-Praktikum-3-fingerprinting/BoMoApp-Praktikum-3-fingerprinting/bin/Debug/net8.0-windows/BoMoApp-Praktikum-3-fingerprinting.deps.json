@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "BoMoApp-Praktikum-3-fingerprinting/1.0.0": {
+        "runtime": {
+          "BoMoApp-Praktikum-3-fingerprinting.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BoMoApp-Praktikum-3-fingerprinting/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
