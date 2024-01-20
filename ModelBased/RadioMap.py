@@ -158,22 +158,25 @@ def euclidan_distance(p1x, p1y, p1z, p2x, p2y, p2z):
 
 #Function to calculate signal strength
 
-def signalStrength(distance):
-    return -33.77 - 10 * 3.415 * math.log10(distance / 1)
+def signalStrength(pdo, d, distance):
+    return pdo - 10 * 3.415 * math.log10(distance / d)
+
+def createFile(pdo, d):
+    with open("Simulation.txt", "a") as datei:
+        for i in range(0, len(coordinates)):
+            output = "" #String for output
+            output += str(coordinates[i][0]) + ", " #Add x-coordinate to string
+            output += str(coordinates[i][1]) + ", " #Add y-coordinate to string
+            output += str(coordinates[i][2]) + ", " #Add z-coordinate to string
+
+            for j in range(0, len(accessPoints)):
+                output += accessPoints[j][0] + ", " #Add Acces Point to string
+                distance = euclidan_distance(coordinates[i][0], coordinates[i][1], coordinates[i][2], accessPoints[j][1], accessPoints[j][2], accessPoints[j][3])
+                output += str(d) + ", " #Add distance to string
+                signal = signalStrength(pdo, d, distance)
+                output += str(signal) + ", " #Add signal strength to string
+
+            datei.write(output + "\n")
 
 
-with open("Simulation.txt", "a") as datei:
-    for i in range(0, len(coordinates)):
-        output = "" #String for output
-        output += str(coordinates[i][0]) + ", " #Add x-coordinate to string
-        output += str(coordinates[i][1]) + ", " #Add y-coordinate to string
-        output += str(coordinates[i][2]) + ", " #Add z-coordinate to string
-
-        for j in range(0, len(accessPoints)):
-            output += accessPoints[j][0] + ", " #Add Acces Point to string
-            d = euclidan_distance(coordinates[i][0], coordinates[i][1], coordinates[i][2], accessPoints[j][1], accessPoints[j][2], accessPoints[j][3])
-            output += str(d) + ", " #Add distance to string
-            signal = signalStrength(d)
-            output += str(signal) + ", " #Add signal strength to string
-
-        datei.write(output + "\n")
+createFile(-33.77, 1)
