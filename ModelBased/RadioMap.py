@@ -179,4 +179,18 @@ def createFile(p0, d0):
 
             datei.write(output + "\n")
 
+def createFileWithoutXYZ(p0, d0):
+    with open("SimulationWithoutXYZ.txt", "w") as datei:
+        for i in range(0, len(coordinates)):
+            output = "" #String for output
+            for j in range(0, len(accessPoints)):
+                output += accessPoints[j][0] + ", " #Add Acces Point to string
+                d = euclidan_distance(coordinates[i][0], coordinates[i][1], coordinates[i][2], accessPoints[j][1], accessPoints[j][2], accessPoints[j][3])
+                output += str(d) + ", " #Add distance to string
+                signal = signalStrength(p0, d, d0)
+                output += str(signal) + ", " #Add signal strength to string
+
+            datei.write(output + "\n")
+
 createFile(-33.77, 1)
+createFileWithoutXYZ(-33.77, 1)
