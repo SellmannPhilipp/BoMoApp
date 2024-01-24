@@ -1,0 +1,9 @@
+# trace started 2007-08-23 19:12:28
+# iwlib based active scan
+# timeout: 300 ms
+# max. scans: 110
+# max. readings: 110
+t=1;pos=0,2,0.0;id=00:02:2D:21:0F:33;SS1=-30,2.412E9,3,-96;SS2=-40,2.462E9,3,-102;SS3=-50,2.442E9,3,-102
+t=1;pos=0,1,0.0;id=00:02:2D:21:0F:33;SS1=-30,2.412E9,3,-96;SS2=-40,2.462E9,3,-102;SS4=-50,2.442E9,3,-102
+
+# Trace finished after 110 scans.

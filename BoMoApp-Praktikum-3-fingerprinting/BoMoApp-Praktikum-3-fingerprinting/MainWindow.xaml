@@ -5,15 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BoMoApp_Praktikum_3_fingerprinting"
         mc:Ignorable="d"
-        Title="MainWindow" Height="750" Width="800">
+        Title="MainWindow" Height="350" Width="600">
     <Grid>
         <TabControl>
             <!-- Tab 1 -->
-            <TabItem Header="1a) empirical-FP-NN">
-
+            <TabItem Header="1a) 1c) empirical-FP-K/NN">
 
                 <!-- Content for Tab 1 -->
-
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -22,58 +20,23 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Matching Method: Nearest Neighbor" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,6,0,48" Grid.RowSpan="2"/>
 
-                    <Button Grid.Row="1" Content="Open Offline File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenOfflineFileDialogButton_Click"/>
-                    <TextBlock Grid.Row="1" x:Name="offlineFilePath" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
-                    <Button Grid.Row="2" Content="Open Online File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenOnlineFileDialogButton_Click"/>
-                    <TextBlock Grid.Row="2" x:Name="onlineFilePath" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
+                    <Button Grid.Row="1" Content="Open Offline File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenFileDialog" Tag="offlineEmpiricalNN"/>
+                    <TextBlock Grid.Row="1" x:Name="offlineFilePathEmpiricalNN" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
+                    <Button Grid.Row="2" Content="Open Online File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenFileDialog" Tag="onlineEmpiricalNN"/>
+                    <TextBlock Grid.Row="2" x:Name="onlineFilePathEmpiricalNN" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
+                    <TextBlock Grid.Row="3" Text="K Nearest Neighbor" Margin="115,5,0,0" VerticalAlignment="Center" Height="20"/>
+                    <TextBox Grid.Row="3" Text="{Binding K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="30" Width="100" VerticalAlignment="Top" Margin="10"/>
+                   
+                    <Button Grid.Row="4" Content="Save Result"  Width="250 " Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"  Click="SaveResult" Tag="saveResult"/>
+                    <Button Grid.Row="4" Content="Save Results k1 - k8"  Width="250 " Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="279,10,0,0"  Click="SaveResult" Tag="saveResultk1k8"/>
+                    
+                    <CheckBox Grid.Row="5" x:Name="errorCheckBoxTab1" Content="Nur Fehlerwerte abspeichern" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
 
-                    <TextBox Grid.Row="3" x:Name="inputDataTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="10,10,120,10" />
-                    <Button Grid.Row="3" Content="Position Prüfen" Width="100" Height="30" Click="CheckButtonClick" HorizontalAlignment="Right" Margin="0,10,10,10"/>
-
-
-
-                    <DataGrid  Grid.Row="4" x:Name="traceDataGrid" Height="500" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" Margin="0,0,0,0" Grid.RowSpan="2">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="X" Binding="{Binding Position.X}" Width="50"/>
-                            <DataGridTextColumn Header="Y" Binding="{Binding Position.Y}" Width="50"/>
-                            <DataGridTemplateColumn Header="AccessPoints" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ItemsControl ItemsSource="{Binding AccessPoints}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <UniformGrid Columns="3" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <WrapPanel Margin="5">
-                                                        <TextBlock Text="{Binding Id}" />
-                                                        <TextBlock Text="=" />
-                                                        <TextBlock Text="{Binding MedianSignalStrength}" />
-                                                        <TextBlock Text=";" />
-
-                                                    </WrapPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                        
-                        <!-- Ereignis für das Kontextmenü zum Kopieren -->
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Kopieren" Click="CopyMenuItem_Click"/>
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-                    </DataGrid>
 
                 </Grid>
 
@@ -81,41 +44,42 @@
             </TabItem>
 
             <!-- Tab 2 -->
-            <TabItem Header="1b) model-FP-NN">
+            <TabItem Header="1b) 1d) model-FP-K/NN">
                 <!-- Content for Tab 2 -->
-                <StackPanel>
-                    <TextBlock Text="Matching Method: Nearest Neighbor" FontSize="16" FontWeight="Bold"/>
-                    <!-- Add your controls and content for Tab 2 here -->
-                </StackPanel>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Matching Method: Nearest Neighbor" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,6,0,48" Grid.RowSpan="2"/>
+
+
+                    <Button Grid.Row="1" Content="Open Offline File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenFileDialog" Tag="offlineModelNN"/>
+                    <TextBlock Grid.Row="1" x:Name="offlineFilePathModelNN" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
+                    <Button Grid.Row="2" Content="Open Online File" Width="100" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="OpenFileDialog" Tag="onlineModelNN"/>
+                    <TextBlock Grid.Row="2" x:Name="onlineFilePathModelNN" Margin="115,0,0,0" VerticalAlignment="Center" Height="30"/>
+
+                    <TextBlock Grid.Row="3" Text="K Nearest Neighbor" Margin="115,5,0,0" VerticalAlignment="Center" Height="20"/>
+                    <TextBox Grid.Row="3" Text="{Binding K, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="30" Width="100" VerticalAlignment="Top" Margin="10"/>
+
+
+                    <Button Grid.Row="4" Content="Save Result"  Width="250 " Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"  Click="SaveResult" Tag="saveResult"/>
+                    <Button Grid.Row="4" Content="Save Results k1 - k8"  Width="250 " Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="279,10,0,0"  Click="SaveResult" Tag="saveResultk1k8"/>
+                    
+                    <CheckBox Grid.Row="5" x:Name="errorCheckBoxTab2" Content="Nur Fehlerwerte abspeichern" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10"/>
+
+                </Grid>
+
+
             </TabItem>
 
-            <!-- Tab 3 -->
-            <TabItem Header="1c) empirical-FP-KNN">
-                <!-- Content for Tab 3 -->
-                <StackPanel>
 
-                    <!-- Add your controls and content for Tab 3 here -->
-
-                </StackPanel>
-            </TabItem>
-
-            <!-- Tab 4 -->
-            <TabItem Header="1d) model-FP-KNN">
-                <!-- Content for Tab 4 -->
-                <StackPanel>
-                    <TextBlock Text="Matching Method: k-nearest Neighbor" FontSize="16" FontWeight="Bold"/>
-                    <!-- Add your controls and content for Tab 4 here -->
-                </StackPanel>
-            </TabItem>
-
-            <!-- Tab 5 -->
-            <TabItem Header="1e) scoreNN">
-                <!-- Content for Tab 5 -->
-                <StackPanel>
-                    <TextBlock Text="Content for Tab 5" FontSize="16" FontWeight="Bold"/>
-                    <!-- Add your controls and content for Tab 5 here -->
-                </StackPanel>
-            </TabItem>
         </TabControl>
     </Grid>
 </Window>

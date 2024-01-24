@@ -10,8 +10,6 @@ namespace BoMoApp_Praktikum_3_fingerprinting.Models
     {
         public string Id { get; set; }
         public int SignalStrength { get; set; }
-        public double Frequency { get; set; }
-        public int Channel { get; set; }
         public int MedianSignalStrength { get; set; }
     }
 }
